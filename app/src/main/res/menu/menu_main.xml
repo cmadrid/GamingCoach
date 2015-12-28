@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="ami.coach.game.gamingcoach.MainActivity" >
+    <item android:id="@+id/cerrar_sesion"
+        android:title="@string/cerrar_sesion"
+        android:orderInCategory="100"
+        app:showAsAction="never" />
+</menu>
