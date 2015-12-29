@@ -93,7 +93,11 @@ public class MainActivity extends AppCompatActivity {
 
 
         String estado_str = sharedpreferences.getString(RegistroActivity.Prefs.StateMessage.name(), "");
-        steam_id.setText(sharedpreferences.getString(RegistroActivity.Prefs.SteamId.name(), ""));
+        String id = sharedpreferences.getString(RegistroActivity.Prefs.SteamId.name(), "");
+        String id64 = sharedpreferences.getString(RegistroActivity.Prefs.SteamId64.name(), "");
+        String customUrl = sharedpreferences.getString(RegistroActivity.Prefs.CustomUrl.name(), "");
+
+        steam_id.setText(id);
         estado.setText(sharedpreferences.getString(RegistroActivity.Prefs.OnlineState.name(), ""));
         mensaje_estado.setText(estado_str);
         imagen_perfil.setImageURI(Uri.parse(sharedpreferences.getString(RegistroActivity.Prefs.Avatar.name(), null)));
@@ -105,12 +109,18 @@ public class MainActivity extends AppCompatActivity {
 
         actualizado.setText("Actualizado el: " +newstring);
         
-        if(estado_str.equalsIgnoreCase("online"))
-            estado.setTextColor(Color.GREEN);
-        else
+        if(estado_str.equalsIgnoreCase("offline"))
             estado.setTextColor(Color.RED);
+        else
+            estado.setTextColor(Color.GREEN);
+
+
+        GetJuegosXml getJuegosXml = new GetJuegosXml();
+        getJuegosXml.execute(customUrl,id64);
 
     }
+
+
 
 
     @Override

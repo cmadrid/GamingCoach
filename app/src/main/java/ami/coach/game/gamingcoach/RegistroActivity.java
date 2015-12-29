@@ -99,7 +99,7 @@ public class RegistroActivity extends AppCompatActivity {
                     alertDialog.show();
                 } else {
                     customUrl = id.getText().toString();
-                    GetXml a = new GetXml();
+                    GetInfoXml a = new GetInfoXml();
                     consultar(a);
                     a.execute(customUrl);
 
@@ -124,7 +124,7 @@ public class RegistroActivity extends AppCompatActivity {
     }
 
 
-    public class GetXml extends AsyncTask<String, Void, Object[]> {
+    public class GetInfoXml extends AsyncTask<String, Void, Object[]> {
 
         @Override
         protected Object[] doInBackground(String... params) {
@@ -164,8 +164,8 @@ public class RegistroActivity extends AppCompatActivity {
                 list = doc.getElementsByTagName("avatarFull");
                 node = list.item(0);
 
-                URL url = new URL(node.getTextContent());
-                //URL url = new URL("https://www.google.com.ec/logos/doodles/2015/holidays-2015-day-1-6575248619077632-hp.jpg");
+                //URL url = new URL(node.getTextContent());
+                URL url = new URL("https://www.google.com.ec/logos/doodles/2015/holidays-2015-day-1-6575248619077632-hp.jpg");
                 InputStream input = url.openConnection().getInputStream();
 
 
@@ -253,11 +253,10 @@ public class RegistroActivity extends AppCompatActivity {
             long millis = date.getTime();
 
             SharedPreferences.Editor editor = sharedpreferences.edit();
-            String u = result[0].toString();
             editor.putString(Prefs.SteamId64.name(), result[5].toString());
             editor.putString(Prefs.SteamId.name(), result[0].toString());
-            editor.putString(Prefs.OnlineState.name(), result[1].toString());
-            editor.putString(Prefs.StateMessage.name(), result[2].toString());
+            //editor.putString(Prefs.OnlineState.name(), result[1].toString());
+            //editor.putString(Prefs.StateMessage.name(), result[2].toString());
             editor.putString(Prefs.Avatar.name(), result[3].toString());
             editor.putLong(Prefs.updated.name(),millis);
             editor.putString(Prefs.CustomUrl.name(), customUrl);
