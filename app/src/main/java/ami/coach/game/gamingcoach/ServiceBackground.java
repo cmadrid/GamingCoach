@@ -11,6 +11,19 @@ import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import java.util.HashMap;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 /**
  * Created by ces_m on 12/6/2015.
  */
@@ -31,7 +44,7 @@ public class ServiceBackground extends Service {
         if(timer==null) {
             timer = new Timer();
             //timer.execute();
-            Toast.makeText(ServiceBackground.this,"Service Started",Toast.LENGTH_SHORT).show();
+            Toast.makeText(ServiceBackground.this,"Gaming Coach ON!",Toast.LENGTH_SHORT).show();
         }
         System.out.println(timer.getStatus());
         return START_STICKY;//averiguar bien
@@ -41,53 +54,89 @@ public class ServiceBackground extends Service {
     public void onDestroy(){
         super.onDestroy();
         timer.cancel(true);
-        Toast.makeText(this,"Services Stoped",Toast.LENGTH_SHORT).show();
+        Toast.makeText(this,"Gaming Coach OFF",Toast.LENGTH_SHORT).show();
     }
 
 
     public class Timer extends AsyncTask<String, Void, String> {
 
+        String onlineState, stateMessage;
+        HashMap<String,Integer> minutesMap = new HashMap<String,Integer>();
         @Override
         protected String doInBackground(String... params) {
             while(true)
             {
                 if(isCancelled())break;
+                getOnlineState();
+                getGamingTime();
                 publishProgress();
                 SystemClock.sleep(300 * 1000);
             }
             return null;
         }
 
+        public void getOnlineState(){
+            try {
+                String customUrl = MainActivity.sharedpreferences.getString(RegistroActivity.Prefs.CustomUrl.name(), "");
+                HttpGet uri = new HttpGet("http://steamcommunity.com/id/" + customUrl + "?xml=1");
+                DefaultHttpClient client = new DefaultHttpClient();
+                HttpResponse resp = client.execute(uri);
+
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder builder = factory.newDocumentBuilder();
+                Document doc = builder.parse(resp.getEntity().getContent());
+
+                NodeList list = doc.getElementsByTagName("onlineState");
+                Node node =  list.item(0);
+                onlineState = node.getTextContent();
+
+                list = doc.getElementsByTagName("stateMessage");
+                node = list.item(0);
+                stateMessage = node.getTextContent();
+
+
+            }catch(Exception e){
+                System.out.println(e.getMessage());
+            }
+
+
+        }
+
+        public void getGamingTime(){
+            try{
+                String steamId64 = MainActivity.sharedpreferences.getString(RegistroActivity.Prefs.SteamId64.name(), "");
+                HttpGet uri2 = new HttpGet("http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=8CA1864E6DDD065C53651CF9F88404B2&steamid="+steamId64+"&format=xml");
+                DefaultHttpClient client2 = new DefaultHttpClient();
+                HttpResponse resp2 = client2.execute(uri2);
+
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder builder = factory.newDocumentBuilder();
+                Document doc = builder.parse(resp2.getEntity().getContent());
+
+                NodeList list = doc.getElementsByTagName("message");
+                String id;
+                int minutos=0;
+                for (int i = 0; i < list.getLength(); i++){
+                    Element currentGame = (Element)list.item(i);
+                    id = currentGame.getElementsByTagName("appid").item(0).getTextContent();
+                    minutos = Integer.parseInt(currentGame.getElementsByTagName("playtime_forever").item(0).getTextContent());
+                    minutesMap.put(id,minutos);
+                }
+
+            }catch (Exception e){
+                System.out.println(e.getMessage());
+            }
+
+        }
+
         @Override
         protected void onProgressUpdate(Void... values) {
             super.onProgressUpdate(values);
 
-            title="Mantenerte en contacto con tu hijo.";
-            content="Es bueno que de vez en cuando en tus momentos libres " +
-                    "llames a tu hijo un momento, asi sea solo a saludar o a " +
-                    "preguntar como esta. Es bueno que el note que lo tienes presente.";
-            int iUniqueId = (int) (System.currentTimeMillis() & 0xfffffff);
-
-
-            Intent intent = new Intent(ServiceBackground.super.getApplicationContext(),MainActivity.class);
-
-            intent.putExtra("title",title);
-            intent.putExtra("content",content);
-            //intent.setFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
-            PendingIntent pIntent = PendingIntent.getActivity(ServiceBackground.super.getApplication(), iUniqueId, intent, 0);
-            Notification noti = new Notification.Builder(ServiceBackground.super.getApplication())
-                    .setTicker("DadTime Notification")
-                    .setContentTitle("DadTime - "+title)
-                    .setContentText(content)
-                    .setSmallIcon(R.mipmap.ic_launcher)
-                    //.setStyle(new Notification.BigTextStyle()
-                    //        .bigText("un texto muy muy laaaaaargooooooo,un texto muy muy laaaaaargooooooo,un texto muy muy laaaaaargooooooo,un texto muy muy laaaaaargooooooo,un texto muy muy laaaaaargooooooo,un texto muy muy laaaaaargooooooo"))
-                    .setContentIntent(pIntent).getNotification();
-            noti.flags=Notification.FLAG_AUTO_CANCEL;
-            NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-            notificationManager.notify(0, noti);
+            GetJuegosXml getJuegosXml = new GetJuegosXml();
+            getJuegosXml.activity=getApplicationContext();
+            //necesita customURL y SteamID64
+            getJuegosXml.execute();
 
         }
 
