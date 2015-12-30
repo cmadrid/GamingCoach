@@ -66,15 +66,16 @@ public class GetJuegosXml extends AsyncTask<String,Void,Object[]> {
                 String ruta=null;
                 try {
 
-                    URL url = new URL(currentGame.getElementsByTagName("logo").item(0).getTextContent());
-                    //URL url = new URL("https://www.google.com.ec/logos/doodles/2015/holidays-2015-day-1-6575248619077632-hp.jpg");
-                    InputStream input = url.openConnection().getInputStream();
 
                     File path = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/GamingCoach/logos");
                     File mediaFile = new File(path,juego.getID_juego()+".jpg");
                     if(!mediaFile.exists()){
 
                         path.mkdirs();
+
+                        URL url = new URL(currentGame.getElementsByTagName("logo").item(0).getTextContent());
+                        //URL url = new URL("https://www.google.com.ec/logos/doodles/2015/holidays-2015-day-1-6575248619077632-hp.jpg");
+                        InputStream input = url.openConnection().getInputStream();
 
                         OutputStream os = new FileOutputStream(mediaFile);
                         byte data[] = new byte[4096];

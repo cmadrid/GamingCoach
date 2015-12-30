@@ -177,9 +177,6 @@ public class RegistroActivity extends AppCompatActivity{
                 list = doc.getElementsByTagName("avatarFull");
                 node = list.item(0);
 
-                URL url = new URL(node.getTextContent());
-                //URL url = new URL("https://www.google.com.ec/logos/doodles/2015/holidays-2015-day-1-6575248619077632-hp.jpg");
-                InputStream input = url.openConnection().getInputStream();
 
 
                 File path = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/GamingCoach/avatars");
@@ -187,6 +184,10 @@ public class RegistroActivity extends AppCompatActivity{
                 if(!mediaFile.exists()){
 
                     path.mkdirs();
+
+                    URL url = new URL(node.getTextContent());
+                    //URL url = new URL("https://www.google.com.ec/logos/doodles/2015/holidays-2015-day-1-6575248619077632-hp.jpg");
+                    InputStream input = url.openConnection().getInputStream();
 
                     OutputStream os = new FileOutputStream(mediaFile);
                     byte data[] = new byte[4096];
