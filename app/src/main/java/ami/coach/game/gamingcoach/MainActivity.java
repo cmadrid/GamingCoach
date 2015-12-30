@@ -28,6 +28,7 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import ami.coach.game.gamingcoach.database.DBJuego;
 import layout.games;
 
 public class MainActivity extends AppCompatActivity {
@@ -108,7 +109,7 @@ public class MainActivity extends AppCompatActivity {
         calendar.setTimeInMillis(millis);
         String newstring = new SimpleDateFormat("dd/MM/yyy HH:mm").format(calendar.getTime());
 
-        actualizado.setText("Actualizado el: " +newstring);
+        actualizado.setText("Actualizado el: " + newstring);
         
         if(estadoEnlinea.equalsIgnoreCase("offline"))
             estado.setTextColor(Color.RED);
@@ -116,8 +117,6 @@ public class MainActivity extends AppCompatActivity {
             estado.setTextColor(Color.GREEN);
 
 
-        GetJuegosXml getJuegosXml = new GetJuegosXml();
-        getJuegosXml.execute(customUrl,id64);
 
     }
 
@@ -150,6 +149,9 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             this.finish();
 
+            DBJuego db_juego=new DBJuego(this);
+            db_juego.vaciar();
+            db_juego.close();
 
             return true;
         }
@@ -174,7 +176,9 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return games.newInstance();//PlaceholderFragment.newInstance(position + 1);
+            if(position==0)
+                return games.newInstance();//
+            else return PlaceholderFragment.newInstance(position + 1);
         }
 
         @Override

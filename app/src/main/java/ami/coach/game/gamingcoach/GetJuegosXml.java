@@ -1,6 +1,7 @@
 package ami.coach.game.gamingcoach;
 
 import android.os.AsyncTask;
+import android.os.Environment;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -10,6 +11,11 @@ import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -18,13 +24,15 @@ import java.util.Map;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import ami.coach.game.gamingcoach.database.DBJuego;
+
 /**
  * Created by Joseph_Gallardo on 29/12/2015.
  */
 public class GetJuegosXml extends AsyncTask<String,Void,Object[]> {
 
     HashMap<String,Juego> listaJuegos = new HashMap<String,Juego>();
-
+    RegistroActivity activity;
     @Override
     protected Object[] doInBackground(String... params) {
 
@@ -54,7 +62,40 @@ public class GetJuegosXml extends AsyncTask<String,Void,Object[]> {
                 Juego juego = new Juego();
                 juego.setID_juego(currentGame.getElementsByTagName("appID").item(0).getTextContent());
                 juego.setNombre_juego(currentGame.getElementsByTagName("name").item(0).getTextContent());
-                juego.setLogo_juego(currentGame.getElementsByTagName("logo").item(0).getTextContent());
+
+                String ruta=null;
+                try {
+
+                    URL url = new URL(currentGame.getElementsByTagName("logo").item(0).getTextContent());
+                    //URL url = new URL("https://www.google.com.ec/logos/doodles/2015/holidays-2015-day-1-6575248619077632-hp.jpg");
+                    InputStream input = url.openConnection().getInputStream();
+
+                    File path = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/GamingCoach/logos");
+                    File mediaFile = new File(path,juego.getID_juego()+".jpg");
+                    if(!mediaFile.exists()){
+
+                        path.mkdirs();
+
+                        OutputStream os = new FileOutputStream(mediaFile);
+                        byte data[] = new byte[4096];
+                        int count;
+                        while ((count = input.read(data)) != -1) {
+                            os.write(data, 0, count);
+                        }
+
+                        if (os != null)
+                            os.close();
+                        if (input != null)
+                            input.close();
+                    }
+
+                    ruta=mediaFile.getAbsoluteFile().toString();
+
+                }catch (Exception e){
+                    System.out.println("error: "+e.getMessage());
+                }
+
+                juego.setLogo_juego(ruta);
                 listaJuegos.put(juego.getID_juego(),juego);
             }
 
@@ -80,9 +121,16 @@ public class GetJuegosXml extends AsyncTask<String,Void,Object[]> {
     @Override
     protected void onPostExecute(Object[] objects) {
         Iterator iterator = listaJuegos.entrySet().iterator();
+        DBJuego db_juego=new DBJuego(activity);
         while(iterator.hasNext()){
             Map.Entry pair = (Map.Entry) iterator.next();
+            Juego juego = (Juego)pair.getValue();
+
+            db_juego.insertaroActualizar(juego.getID_juego(), juego.getNombre_juego(), juego.getLogo_juego(), juego.getMinTotal());
             System.out.println(pair.getValue());
+
         }
+        db_juego.close();
+        activity.procesoFinal();
     }
 }
