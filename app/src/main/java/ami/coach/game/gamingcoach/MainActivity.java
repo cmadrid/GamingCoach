@@ -96,9 +96,10 @@ public class MainActivity extends AppCompatActivity {
         String id = sharedpreferences.getString(RegistroActivity.Prefs.SteamId.name(), "");
         String id64 = sharedpreferences.getString(RegistroActivity.Prefs.SteamId64.name(), "");
         String customUrl = sharedpreferences.getString(RegistroActivity.Prefs.CustomUrl.name(), "");
+        String estadoEnlinea = sharedpreferences.getString(RegistroActivity.Prefs.OnlineState.name(), "");
 
         steam_id.setText(id);
-        estado.setText(sharedpreferences.getString(RegistroActivity.Prefs.OnlineState.name(), ""));
+        estado.setText(estadoEnlinea);
         mensaje_estado.setText(estado_str);
         imagen_perfil.setImageURI(Uri.parse(sharedpreferences.getString(RegistroActivity.Prefs.Avatar.name(), null)));
         
@@ -109,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
 
         actualizado.setText("Actualizado el: " +newstring);
         
-        if(estado_str.equalsIgnoreCase("offline"))
+        if(estadoEnlinea.equalsIgnoreCase("offline"))
             estado.setTextColor(Color.RED);
         else
             estado.setTextColor(Color.GREEN);

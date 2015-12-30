@@ -255,8 +255,8 @@ public class RegistroActivity extends AppCompatActivity {
             SharedPreferences.Editor editor = sharedpreferences.edit();
             editor.putString(Prefs.SteamId64.name(), result[5].toString());
             editor.putString(Prefs.SteamId.name(), result[0].toString());
-            //editor.putString(Prefs.OnlineState.name(), result[1].toString());
-            //editor.putString(Prefs.StateMessage.name(), result[2].toString());
+            editor.putString(Prefs.OnlineState.name(), result[1].toString());
+            editor.putString(Prefs.StateMessage.name(), result[2].toString());
             editor.putString(Prefs.Avatar.name(), result[3].toString());
             editor.putLong(Prefs.updated.name(),millis);
             editor.putString(Prefs.CustomUrl.name(), customUrl);

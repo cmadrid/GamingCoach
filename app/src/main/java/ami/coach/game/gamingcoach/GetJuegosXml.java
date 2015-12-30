@@ -6,6 +6,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
@@ -43,13 +44,13 @@ public class GetJuegosXml extends AsyncTask<String,Void,Object[]> {
             DocumentBuilder builder = factory.newDocumentBuilder();
             Document doc = builder.parse(resp1.getEntity().getContent());
 
-            NodeList list = doc.getElementsByTagName("games");
-            NodeList gamesList = list.item(0).getChildNodes();
-            System.out.println(gamesList.getLength());
+            NodeList list = doc.getElementsByTagName("game");
+            System.out.println(list.getLength());
+            System.out.println(list.item(0).getTextContent());
 
-            for (int i = 0; i < gamesList.getLength(); i++) {
+            for (int i = 0; i < list.getLength(); i++) {
                 //Node currentNode = list.item(i);
-                Document currentGame = gamesList.item(i).getOwnerDocument();
+                Element currentGame = (Element)list.item(i);
                 Juego juego = new Juego();
                 juego.setID_juego(currentGame.getElementsByTagName("appID").item(0).getTextContent());
                 juego.setNombre_juego(currentGame.getElementsByTagName("name").item(0).getTextContent());
@@ -60,10 +61,12 @@ public class GetJuegosXml extends AsyncTask<String,Void,Object[]> {
             doc = builder.parse(resp2.getEntity().getContent());
             list = doc.getElementsByTagName("message");
             String id = new String();
+            int minutos=0;
             for (int i = 0; i < list.getLength(); i++){
-                Node currentNode = list.item(i);
-                id = currentNode.getChildNodes().item(0).getTextContent();
-                listaJuegos.get(id).setMinTotal(Integer.parseInt(currentNode.getChildNodes().item(1).getTextContent()));
+                Element currentGame = (Element)list.item(i);
+                id = currentGame.getElementsByTagName("appid").item(0).getTextContent();
+                minutos = Integer.parseInt(currentGame.getElementsByTagName("playtime_forever").item(0).getTextContent());
+                listaJuegos.get(id).setMinTotal(minutos);
             }
         }
         catch (Exception e) {
