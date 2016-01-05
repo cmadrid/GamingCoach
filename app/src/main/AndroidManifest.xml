@@ -27,6 +27,7 @@
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar" >
         </activity>
+        <service android:name=".ServiceBackground"/>
     </application>
 
 </manifest>

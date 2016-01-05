@@ -1,5 +1,7 @@
 package ami.coach.game.gamingcoach;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Environment;
 
@@ -32,7 +34,13 @@ import ami.coach.game.gamingcoach.database.DBJuego;
 public class GetJuegosXml extends AsyncTask<String,Void,Object[]> {
 
     HashMap<String,Juego> listaJuegos = new HashMap<String,Juego>();
-    RegistroActivity activity;
+    Context activity;
+    SharedPreferences sharedPreferences;
+
+    public GetJuegosXml(Context ctx, SharedPreferences sharedPreferences){
+        activity=ctx;
+        this.sharedPreferences = sharedPreferences;
+    }
     @Override
     protected Object[] doInBackground(String... params) {
 
@@ -126,12 +134,11 @@ public class GetJuegosXml extends AsyncTask<String,Void,Object[]> {
         while(iterator.hasNext()){
             Map.Entry pair = (Map.Entry) iterator.next();
             Juego juego = (Juego)pair.getValue();
-
             db_juego.insertaroActualizar(juego.getID_juego(), juego.getNombre_juego(), juego.getLogo_juego(), juego.getMinTotal());
             System.out.println(pair.getValue());
-
         }
         db_juego.close();
-        activity.procesoFinal();
+        if(activity.getClass()==RegistroActivity.class)
+            ((RegistroActivity)activity).procesoFinal();
     }
 }

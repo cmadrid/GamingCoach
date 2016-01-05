@@ -116,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         else
             estado.setTextColor(Color.GREEN);
 
-
+        startService(new Intent(getBaseContext(),ServiceBackground.class));
 
     }
 
@@ -153,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
             db_juego.vaciar();
             db_juego.close();
 
+            stopService(new Intent(getBaseContext(), ServiceBackground.class));
             return true;
         }
 
