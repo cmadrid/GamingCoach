@@ -1,19 +1,29 @@
 package layout;
+import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
+
 
 import com.github.mikephil.charting.charts.LineChart;
-import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.utils.ColorTemplate;
 
+
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 import ami.coach.game.gamingcoach.R;
 
@@ -22,6 +32,7 @@ import ami.coach.game.gamingcoach.R;
 public class Chart extends Fragment {
 
     LineChart mLineChart;
+    HashMap<String,ArrayList<Entry>> mapaTest;
 
 
     public static Chart newInstance() {
@@ -37,66 +48,183 @@ public class Chart extends Fragment {
 
 
         View V = inflater.inflate(R.layout.fragment_chart, container, false);
-        mLineChart = (LineChart) V.findViewById(R.id.mLineChart);
-        addChart();
+        //mLineChart = (LineChart) V.findViewById(R.id.mLineChart);
+
+        ListView lv = (ListView) V.findViewById(R.id.listView1);
+
+        ArrayList<ChartItem> list = new ArrayList<ChartItem>();
+
+        crearMaps();
+
+        list.add(new LineChartItem(generateDataLine(mapaTest),getActivity()));
+        list.add(new PieChartItem(generateDataPie(mapaTest),getActivity()));
+
+        //addChart();
+
+        ChartDataAdapter cda = new ChartDataAdapter(getActivity(), list);
+        lv.setAdapter(cda);
 
 
         return V;
 
     }
 
-    public void addChart() {
+    private LineData generateDataLine(HashMap<String,ArrayList<Entry>> entradas) {
 
-        // add the programmatically created chart
-        ArrayList<Entry> valsComp1 = new ArrayList<Entry>();
-        ArrayList<Entry> valsComp2 = new ArrayList<Entry>();
+        Iterator it = entradas.entrySet().iterator();
+        ArrayList<LineDataSet> sets = new ArrayList<LineDataSet>();
+        while(it.hasNext()){
+            Map.Entry current = (Map.Entry) it.next();
+            LineDataSet d1 = new LineDataSet((ArrayList)current.getValue(), ""+current.getKey());
+            d1.setLineWidth(2.5f);
+            d1.setCircleSize(4.5f);
+            d1.setHighLightColor(Color.rgb(244, 117, 117));
+            d1.setDrawValues(false);
+            sets.add(d1);
+        }
 
-        Entry c1e1 = new Entry(100.000f, 0); // 0 == quarter 1
-        valsComp1.add(c1e1);
-        Entry c1e2 = new Entry(50.000f, 1); // 1 == quarter 2 ...
-        valsComp1.add(c1e2);
-        Entry c1e3 = new Entry(70.000f, 2); // 0 == quarter 3
-        valsComp1.add(c1e3);
-        Entry c1e4 = new Entry(85.000f, 3); // 1 == quarter 4 ...
-        valsComp1.add(c1e4);
-        Entry c1e5 = new Entry(100.000f, 4); // 1 == quarter 4 ...
-        valsComp1.add(c1e5);
-        Entry c1e6 = new Entry(150.000f, 5); // 1 == quarter 4 ...
-        valsComp1.add(c1e6);
+        LineData cd = new LineData(getWeekDays(), sets);
+        return cd;
+    }
 
-        Entry c2e1 = new Entry(120.000f, 0); // 0 == quarter 1
-        valsComp2.add(c2e1);
-        Entry c2e2 = new Entry(110.000f, 1); // 1 == quarter 2 ...
-        valsComp2.add(c2e2);
-        Entry c2e3 = new Entry(75.000f, 2); // 0 == quarter 3
-        valsComp2.add(c2e3);
-        Entry c2e4 = new Entry(125.000f, 3); // 1 == quarter 4 ...
-        valsComp2.add(c2e4);
-        Entry c2e5 = new Entry(95.000f, 4); // 1 == quarter 4 ...
-        valsComp2.add(c2e5);
-        Entry c2e6 = new Entry(105.000f, 5); // 1 == quarter 4 ...
-        valsComp2.add(c2e5);
+    private PieData generateDataPie(HashMap<String,ArrayList<Entry>> entradas) {
 
-        LineDataSet setComp1 = new LineDataSet(valsComp1, "Company 1");
-        setComp1.setColor(ColorTemplate.COLORFUL_COLORS[0]);
-        LineDataSet setComp2 = new LineDataSet(valsComp2, "Company 2");
-        setComp2.setColor(ColorTemplate.LIBERTY_COLORS[3]);
+        Iterator it = entradas.entrySet().iterator();
 
-        ArrayList<LineDataSet> dataSets = new ArrayList<LineDataSet>();
-        dataSets.add(setComp1);
-        dataSets.add(setComp2);
+        ArrayList<Entry> entries = new ArrayList<Entry>();
+        ArrayList<Entry> temp;
+        ArrayList<String> labels = new ArrayList<String>();
+        int horasxjuego=0,j=0;
 
-        ArrayList<String> xVals = new ArrayList<String>();
-        xVals.add("1.Q");
-        xVals.add("2.Q");
-        xVals.add("3.Q");
-        xVals.add("4.Q");
-        xVals.add("5.Q");
-        xVals.add("6.Q");
+        while(it.hasNext()){
+            Map.Entry current = (Map.Entry) it.next();
+            temp = (ArrayList)current.getValue();
+            for(int i=0;i<temp.size();i++){
+                horasxjuego += (int)temp.get(i).getVal();
+            }
+            entries.add(new Entry(horasxjuego,j));
+            labels.add(current.getKey().toString());
+            j++;
+            horasxjuego=0;
+        }
 
-        LineData data = new LineData(xVals, dataSets);
-        mLineChart.setData(data);
-        mLineChart.invalidate(); // refresh
+        PieDataSet d = new PieDataSet(entries, "");
 
+        // space between slices
+        d.setSliceSpace(2f);
+        d.setColors(ColorTemplate.VORDIPLOM_COLORS);
+
+        PieData cd = new PieData(labels,d);
+        return cd;
+    }
+
+
+
+    public void crearMaps() {
+
+        mapaTest = new HashMap<String,ArrayList<Entry>>();
+        ArrayList<Entry> horas = new ArrayList<Entry>();
+
+        horas.add(new Entry(0,0));
+        horas.add(new Entry(2, 1));
+        horas.add(new Entry(3, 2));
+        horas.add(new Entry(0, 3));
+        horas.add(new Entry(2, 4));
+        horas.add(new Entry(5, 5));
+        horas.add(new Entry(0, 6));
+        mapaTest.put("Resident Evil 5", horas);
+
+
+        horas=new ArrayList<>();
+
+        horas.add(new Entry(3,0));
+        horas.add(new Entry(0,1));
+        horas.add(new Entry(2,2));
+        horas.add(new Entry(4,3));
+        horas.add(new Entry(0,4));
+        horas.add(new Entry(5,5));
+        horas.add(new Entry(3,6));
+        mapaTest.put("Metal Gear Solid 5", horas);
+
+
+        horas=new ArrayList<>();
+
+        horas.add(new Entry(1,0));
+        horas.add(new Entry(0,1));
+        horas.add(new Entry(4,2));
+        horas.add(new Entry(1,3));
+        horas.add(new Entry(2,4));
+        horas.add(new Entry(3,5));
+        horas.add(new Entry(1,6));
+        mapaTest.put("Crash Bandicoot", horas);
+
+    }
+
+    /** adapter that supports 3 different item types */
+    private class ChartDataAdapter extends ArrayAdapter<ChartItem> {
+
+        public ChartDataAdapter(Context context, List<ChartItem> objects) {
+            super(context, 0, objects);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            return getItem(position).getView(position, convertView, getContext());
+        }
+
+        @Override
+        public int getItemViewType(int position) {
+            // return the views type
+            return getItem(position).getItemType();
+        }
+
+        @Override
+        public int getViewTypeCount() {
+            return 3; // we have 3 different item-types
+        }
+    }
+
+    private ArrayList<String> getQuarters() {
+
+        ArrayList<String> q = new ArrayList<String>();
+        q.add("1st Quarter");
+        q.add("2nd Quarter");
+        q.add("3rd Quarter");
+        q.add("4th Quarter");
+
+        return q;
+    }
+
+    private ArrayList<String> getMonths() {
+
+        ArrayList<String> m = new ArrayList<String>();
+        m.add("Jan");
+        m.add("Feb");
+        m.add("Mar");
+        m.add("Apr");
+        m.add("May");
+        m.add("Jun");
+        m.add("Jul");
+        m.add("Aug");
+        m.add("Sep");
+        m.add("Okt");
+        m.add("Nov");
+        m.add("Dec");
+
+        return m;
+    }
+
+    private ArrayList<String> getWeekDays() {
+
+        ArrayList<String> m = new ArrayList<String>();
+        m.add("Lun");
+        m.add("Mar");
+        m.add("Mie");
+        m.add("Jue");
+        m.add("Vie");
+        m.add("Sab");
+        m.add("Dom");
+
+        return m;
     }
 }
