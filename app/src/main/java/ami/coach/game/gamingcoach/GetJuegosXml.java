@@ -1,6 +1,7 @@
 package ami.coach.game.gamingcoach;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Environment;
 
@@ -34,6 +35,12 @@ public class GetJuegosXml extends AsyncTask<String,Void,Object[]> {
 
     HashMap<String,Juego> listaJuegos = new HashMap<String,Juego>();
     Context activity;
+    SharedPreferences sharedPreferences;
+
+    public GetJuegosXml(Context ctx, SharedPreferences sharedPreferences){
+        activity=ctx;
+        this.sharedPreferences = sharedPreferences;
+    }
     @Override
     protected Object[] doInBackground(String... params) {
 
