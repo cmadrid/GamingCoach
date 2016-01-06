@@ -30,14 +30,7 @@ public class games extends Fragment {
             ll_juegos=(LinearLayout)V.findViewById(R.id.lista_juegos);
 
             addGames();
-/*
-            ll_juegos.addView(GameView.newInstance(getContext(),"Juego X",null));
-            ll_juegos.addView(GameView.newInstance(getContext(),"Juego Y",null));
-            ll_juegos.addView(GameView.newInstance(getContext(),"Juego Z",null));
-            ll_juegos.addView(GameView.newInstance(getContext(),"Juego A",null));
-            ll_juegos.addView(GameView.newInstance(getContext(),"Juego B",null));
-            ll_juegos.addView(GameView.newInstance(getContext(),"Juego C",null));
-*/
+
             return V;
 
         }

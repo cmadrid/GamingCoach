@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import ami.coach.game.gamingcoach.database.DBJuego;
+import layout.Chart;
 import layout.games;
 
 public class MainActivity extends AppCompatActivity {
@@ -116,6 +117,8 @@ public class MainActivity extends AppCompatActivity {
         else
             estado.setTextColor(Color.GREEN);
 
+        startService(new Intent(getBaseContext(),ServiceBackground.class));
+
 
 
     }
@@ -152,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
             DBJuego db_juego=new DBJuego(this);
             db_juego.vaciar();
             db_juego.close();
+            stopService(new Intent(getBaseContext(),ServiceBackground.class));
 
             return true;
         }
@@ -177,8 +181,8 @@ public class MainActivity extends AppCompatActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             if(position==0)
-                return games.newInstance();//
-            else return PlaceholderFragment.newInstance(position + 1);
+                return games.newInstance();
+            else return Chart.newInstance();
         }
 
         @Override

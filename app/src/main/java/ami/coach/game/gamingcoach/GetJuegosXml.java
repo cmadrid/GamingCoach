@@ -1,5 +1,6 @@
 package ami.coach.game.gamingcoach;
 
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Environment;
 
@@ -32,7 +33,7 @@ import ami.coach.game.gamingcoach.database.DBJuego;
 public class GetJuegosXml extends AsyncTask<String,Void,Object[]> {
 
     HashMap<String,Juego> listaJuegos = new HashMap<String,Juego>();
-    RegistroActivity activity;
+    Context activity;
     @Override
     protected Object[] doInBackground(String... params) {
 
@@ -102,7 +103,7 @@ public class GetJuegosXml extends AsyncTask<String,Void,Object[]> {
 
             doc = builder.parse(resp2.getEntity().getContent());
             list = doc.getElementsByTagName("message");
-            String id = new String();
+            String id;
             int minutos=0;
             for (int i = 0; i < list.getLength(); i++){
                 Element currentGame = (Element)list.item(i);
@@ -132,6 +133,7 @@ public class GetJuegosXml extends AsyncTask<String,Void,Object[]> {
 
         }
         db_juego.close();
-        activity.procesoFinal();
+        if(activity.getClass()==RegistroActivity.class)
+            ((RegistroActivity)activity).procesoFinal();
     }
 }
