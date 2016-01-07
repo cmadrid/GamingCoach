@@ -29,6 +29,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 import ami.coach.game.gamingcoach.database.DBJuego;
+import ami.coach.game.gamingcoach.database.DBSesiones;
 import layout.Chart;
 import layout.games;
 
@@ -42,6 +43,7 @@ public class MainActivity extends AppCompatActivity {
      * may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
+    static MainActivity mainActivity=null;
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
     /**
@@ -52,12 +54,18 @@ public class MainActivity extends AppCompatActivity {
     static String steamId64;
     static String steamId;
     static SharedPreferences sharedpreferences;
+    ImageView imagen_perfil;
+    TextView steam_id;
+    TextView estado;
+    TextView mensaje_estado;
+    TextView actualizado;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        mainActivity=this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_2);
         this.intent = getIntent();
-
 
         sharedpreferences = getSharedPreferences(RegistroActivity.MyPREFERENCES, Context.MODE_PRIVATE);
         steamId64 = sharedpreferences.getString(RegistroActivity.Prefs.SteamId64.name(), "");
@@ -86,43 +94,54 @@ public class MainActivity extends AppCompatActivity {
       });
 
 
-        ImageView imagen_perfil = (ImageView)findViewById(R.id.img_perfil);
-        TextView steam_id = (TextView)findViewById(R.id.steam_id);
-        TextView estado = (TextView)findViewById(R.id.status);
-        TextView mensaje_estado = (TextView)findViewById(R.id.stateMessage);
-        TextView actualizado = (TextView)findViewById(R.id.updated);
+        imagen_perfil = (ImageView)findViewById(R.id.img_perfil);
+        steam_id = (TextView)findViewById(R.id.steam_id);
+        estado = (TextView)findViewById(R.id.status);
+        mensaje_estado = (TextView)findViewById(R.id.stateMessage);
+        actualizado = (TextView)findViewById(R.id.updated);
 
 
+        setInfo();
+
+        startService(new Intent(getBaseContext(),ServiceBackground.class));
+
+    }
+
+    public void setInfo(){
 
         String estado_str = sharedpreferences.getString(RegistroActivity.Prefs.StateMessage.name(), "");
         String id = sharedpreferences.getString(RegistroActivity.Prefs.SteamId.name(), "");
-        String id64 = sharedpreferences.getString(RegistroActivity.Prefs.SteamId64.name(), "");
-        String customUrl = sharedpreferences.getString(RegistroActivity.Prefs.CustomUrl.name(), "");
         String estadoEnlinea = sharedpreferences.getString(RegistroActivity.Prefs.OnlineState.name(), "");
-
         steam_id.setText(id);
         estado.setText(estadoEnlinea);
         mensaje_estado.setText(estado_str);
         imagen_perfil.setImageURI(Uri.parse(sharedpreferences.getString(RegistroActivity.Prefs.Avatar.name(), null)));
-        
+
         Long millis = sharedpreferences.getLong(RegistroActivity.Prefs.updated.name(), 0);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(millis);
         String newstring = new SimpleDateFormat("dd/MM/yyy HH:mm").format(calendar.getTime());
 
         actualizado.setText("Actualizado el: " + newstring);
-        
+
         if(estadoEnlinea.equalsIgnoreCase("offline"))
             estado.setTextColor(Color.RED);
         else
             estado.setTextColor(Color.GREEN);
 
-        startService(new Intent(getBaseContext(),ServiceBackground.class));
-
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setInfo();
+    }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mainActivity=null;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -153,6 +172,9 @@ public class MainActivity extends AppCompatActivity {
             DBJuego db_juego=new DBJuego(this);
             db_juego.vaciar();
             db_juego.close();
+            DBSesiones db_sesiones=new DBSesiones(this);
+            db_sesiones.vaciar();
+            db_sesiones.close();
             stopService(new Intent(getBaseContext(),ServiceBackground.class));
             
             return true;
@@ -186,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 3;
+            return 2;
         }
 
         @Override
@@ -196,46 +218,11 @@ public class MainActivity extends AppCompatActivity {
                     return "Actididades";
                 case 1:
                     return "Estadisticas";
-                case 2:
-                    return "Proximamente";
+                /*case 2:
+                    return "Proximamente";*/
             }
             return null;
         }
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
-
-            textView.setText(getString(R.string.section_format, getArguments().getInt(ARG_SECTION_NUMBER)));
-            return rootView;
-        }
-    }
 }

@@ -1,5 +1,6 @@
 package layout;
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -26,7 +27,8 @@ import java.util.List;
 import java.util.Map;
 
 import ami.coach.game.gamingcoach.R;
-
+import ami.coach.game.gamingcoach.database.DBSesiones;
+import ami.coach.game.gamingcoach.views.GameView;
 
 
 public class Chart extends Fragment {
@@ -55,6 +57,7 @@ public class Chart extends Fragment {
         ArrayList<ChartItem> list = new ArrayList<ChartItem>();
 
         crearMaps();
+        crearMapasV();
 
         list.add(new LineChartItem(generateDataLine(mapaTest),getActivity()));
         list.add(new PieChartItem(generateDataPie(mapaTest),getActivity()));
@@ -226,5 +229,38 @@ public class Chart extends Fragment {
         m.add("Dom");
 
         return m;
+    }
+
+    public void crearMapasV(){
+        DBSesiones db_sesiones=new DBSesiones(getActivity());
+        Cursor datos = db_sesiones.consultarSemana();
+        int juego=0;
+        mapaTest=new HashMap<>();
+        ArrayList<Entry> juegos=new ArrayList<>();
+        int indice=0;
+        if (datos.moveToFirst()) {
+            //Recorremos el cursor hasta que no haya más registros
+            do {
+
+                if(juego!=datos.getInt(0) && juego!=0)
+                {
+                    mapaTest.put(juego+"",juegos);
+                    juegos = new ArrayList<>();
+                    indice=0;
+                }
+
+                juego=datos.getInt(0);
+                juegos.add(new Entry(datos.getInt(1), indice));
+                indice++;
+
+                System.out.println(datos.getInt(0));
+                System.out.println(datos.getInt(1));
+                System.out.println(datos.getString(2));
+            } while(datos.moveToNext());
+
+            mapaTest.put(juego+"",juegos);
+        }
+
+        db_sesiones.close();
     }
 }

@@ -11,7 +11,7 @@ import java.util.Date;
 public class DBSesiones {
     public static final String NOMBRE_TABLA = "sesiones";
     public static final String ID = "_id";
-    public static final String JUEGO = "ig_juego";
+    public static final String JUEGO = "id_juego";
     public static final String MINUTOS = "minutos";
     public static final String INICIO = "inicio";
 
@@ -67,6 +67,24 @@ public class DBSesiones {
         if(juego==null)return db.query(NOMBRE_TABLA, campos, null, null, null, null,null);
         return db.query(NOMBRE_TABLA, campos, JUEGO+"=? and date('now',-10 minutes)<"+INICIO, args, null, null, null);
     }
+    public Cursor consultar(String id){
+        //insert  into contactos
+
+        String[] campos = new String[] {ID, MINUTOS,INICIO};
+        //Cursor c = db.query(NOMBRE_TABLA, campos, "usuario=?(where)", args(para el where), group by, having, order by, num);
+
+        String[] args = new String[] {id};
+
+        if(id==null)return db.query(NOMBRE_TABLA, campos, null, null, null, null,null);
+        return db.query(NOMBRE_TABLA, campos, ID+"=?", args, null, null, null);
+    }
+
+    public Cursor consultarSemana(){
+        String[] campos = new String[] {JUEGO, "sum("+MINUTOS+")","strftime('%Y-%m-%d',"+INICIO+ ")"};
+
+        return db.query(NOMBRE_TABLA, campos, null, null,"1,3", null, "1,3");
+    }
+
 
 
     public void vaciar(){

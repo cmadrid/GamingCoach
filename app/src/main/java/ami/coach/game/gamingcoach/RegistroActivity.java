@@ -28,10 +28,13 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.URL;
+import java.util.Calendar;
 import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+
+import ami.coach.game.gamingcoach.database.DBSesiones;
 
 /**
  * Created by ces_m on 12/22/2015.
@@ -141,7 +144,55 @@ public class RegistroActivity extends AppCompatActivity{
         //if(consultando!=null)consultando.dismiss();
         Intent intent = new Intent(activity, MainActivity.class);
         startActivity(intent);
-
+        llenarSesiones();
         activity.finish();
+    }
+
+    public void llenarSesiones(){
+        //id juegos
+        String id1="314000";
+        String id2="356330";
+        String id3="381990";
+        String id4="397040";
+        String id5="420880";
+        String id6="422630";
+        String id7="423880";
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.DAY_OF_MONTH, -5);
+        DBSesiones dbSesiones=new DBSesiones(ctx);
+
+        dbSesiones.insertar(id1, 35 + "", calendar.getTime());
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        dbSesiones.insertar(id1, 50 + "", calendar.getTime());
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        dbSesiones.insertar(id1, 10 + "", calendar.getTime());
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        dbSesiones.insertar(id1, 0 + "", calendar.getTime());
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        dbSesiones.insertar(id1, 0 + "", calendar.getTime());
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        dbSesiones.insertar(id1, 5 + "", calendar.getTime());
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        dbSesiones.insertar(id1, 115 + "", calendar.getTime());
+
+        calendar.add(Calendar.DAY_OF_MONTH, 6);
+        dbSesiones.insertar(id2, 15 + "", calendar.getTime());
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        dbSesiones.insertar(id2, 35 + "", calendar.getTime());
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        dbSesiones.insertar(id2, 20 + "", calendar.getTime());
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        dbSesiones.insertar(id2, 0 + "", calendar.getTime());
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        dbSesiones.insertar(id2, 10 + "", calendar.getTime());
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        dbSesiones.insertar(id2, 110 + "", calendar.getTime());
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        dbSesiones.insertar(id2, 20 + "", calendar.getTime());
+
+        calendar.add(Calendar.DAY_OF_MONTH, 6);
+
+        dbSesiones.close();
     }
 }

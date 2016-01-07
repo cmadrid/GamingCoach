@@ -61,8 +61,8 @@ public class GetJuegosXml extends AsyncTask<String,Void,Object[]> {
             Document doc = builder.parse(resp1.getEntity().getContent());
 
             NodeList list = doc.getElementsByTagName("game");
-            System.out.println(list.getLength());
-            System.out.println(list.item(0).getTextContent());
+            //System.out.println(list.getLength());
+            //System.out.println(list.item(0).getTextContent());
 
             for (int i = 0; i < list.getLength(); i++) {
                 //Node currentNode = list.item(i);
@@ -136,7 +136,7 @@ public class GetJuegosXml extends AsyncTask<String,Void,Object[]> {
             Juego juego = (Juego)pair.getValue();
 
             db_juego.insertaroActualizar(juego.getID_juego(), juego.getNombre_juego(), juego.getLogo_juego(), juego.getMinTotal());
-            System.out.println(pair.getValue());
+            //System.out.println(pair.getValue());
 
         }
         db_juego.close();

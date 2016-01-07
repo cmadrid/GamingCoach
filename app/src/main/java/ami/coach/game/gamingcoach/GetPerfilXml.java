@@ -35,6 +35,7 @@ public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
     public static final String MyPREFERENCES = "logPreferences" ;
     SharedPreferences sharedpreferences;
     public GetPerfilXml(Context ctx){
+
         this.ctx=ctx;
         sharedpreferences=ctx.getSharedPreferences(MyPREFERENCES,Context.MODE_PRIVATE);
     }
@@ -68,6 +69,7 @@ public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
             list = doc.getElementsByTagName("onlineState");
             node = list.item(0);
             result[1]=node.getTextContent();
+            System.out.println(result[1]);
 
             list = doc.getElementsByTagName("stateMessage");
             node = list.item(0);
@@ -105,8 +107,7 @@ public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
 
 
             result[3]=mediaFile.getAbsoluteFile();
-            System.out.println("archivo: "+mediaFile.getAbsoluteFile());
-
+            System.out.println("archivo: " + mediaFile.getAbsoluteFile());
 
 
 
@@ -116,6 +117,7 @@ public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
             System.out.println(node.getTextContent());
             result[5]=node.getTextContent();
 
+            System.out.println(new Date());
 
 
         }catch (Exception e){
@@ -124,18 +126,14 @@ public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
             result=null;
         }
 
-
-
-
-
-
-
+        publishProgress();
         return result;
     }
 
     @Override
     protected void onProgressUpdate(Void... values) {
         super.onProgressUpdate(values);
+        System.out.println("avanzando");
 
     }
 
@@ -183,6 +181,8 @@ public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
         editor.putLong(RegistroActivity.Prefs.updated.name(), millis);
         editor.commit();
 
+        if(MainActivity.mainActivity!=null)
+            MainActivity.mainActivity.setInfo();
         GetJuegosXml getJuegosXml = new GetJuegosXml(ctx,sharedpreferences);
         if(ctx.getClass()==RegistroActivity.class) {
             RegistroActivity reg = (RegistroActivity) ctx;
