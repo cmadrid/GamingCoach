@@ -169,12 +169,12 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             this.finish();
 
-            DBJuego db_juego=new DBJuego(this);
-            db_juego.vaciar();
-            db_juego.close();
             DBSesiones db_sesiones=new DBSesiones(this);
             db_sesiones.vaciar();
             db_sesiones.close();
+            DBJuego db_juego=new DBJuego(this);
+            db_juego.vaciar();
+            db_juego.close();
             stopService(new Intent(getBaseContext(),ServiceBackground.class));
             
             return true;

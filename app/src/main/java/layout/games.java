@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 
 import ami.coach.game.gamingcoach.R;
 import ami.coach.game.gamingcoach.database.DBJuego;
+import ami.coach.game.gamingcoach.database.DBSesiones;
 import ami.coach.game.gamingcoach.views.GameView;
 
 public class games extends Fragment {
@@ -35,16 +36,27 @@ public class games extends Fragment {
 
         }
         public void addGames(){
+            //consulta de todos los juegos con el tiempo acumulado de x vida
             DBJuego db_juego=new DBJuego(getActivity());
             Cursor datos = db_juego.consultar(null);
             if (datos.moveToFirst()) {
-                //Recorremos el cursor hasta que no haya más registros
                 do {
                     ll_juegos.addView(GameView.newInstance(getContext(),datos.getString(1),"Tiempo de juego en minutos: "+datos.getString(2),datos.getString(3)));
                 } while(datos.moveToNext());
             }
-
             db_juego.close();
+
+            //consulta de las sesiones
+            DBSesiones db_sesiones = new DBSesiones(getActivity());
+            datos = db_sesiones.consultar(null);
+            if (datos.moveToFirst()) {
+                do {
+                    ll_juegos.addView(GameView.newInstance(getContext(),datos.getString(1),"Tiempo de juego en minutos: "+datos.getString(2),datos.getString(3)));
+                } while(datos.moveToNext());
+            }
+            db_sesiones.close();
+
+
         }
 
     }

@@ -10,11 +10,13 @@ import java.util.Date;
 
 public class DBSesiones {
     public static final String NOMBRE_TABLA = "sesiones";
-    public static final String ID = "_id";
-    public static final String JUEGO = "id_juego";
-    public static final String MINUTOS = "minutos";
-    public static final String INICIO = "inicio";
+    public static final String ID = "_id_sesiones";
+    public static final String JUEGO = "id_juego_sesiones";
+    public static final String MINUTOS = "minutos_sesiones";
+    public static final String INICIO = "inicio_sesiones";
 
+    public static final  String TABLE_FK=DBJuego.NOMBRE_TABLA;
+    public static final String FK_ID = DBJuego.ID;
 
     private DbHelper helper;
     private SQLiteDatabase db;
@@ -23,8 +25,8 @@ public class DBSesiones {
             + ID + " integer primary key autoincrement,"
             + JUEGO + " integer not null,"
             + MINUTOS + " integer not null,"
-            + INICIO + "  TIMESTAMP NOT NULL"
-            +");";
+            + INICIO + "  TIMESTAMP NOT NULL,"
+            + " FOREIGN KEY("+JUEGO+") REFERENCES "+TABLE_FK+"("+FK_ID+"));";
 
     public DBSesiones(Context contexto) {
         helper = new DbHelper(contexto);
@@ -70,19 +72,32 @@ public class DBSesiones {
     public Cursor consultar(String id){
         //insert  into contactos
 
-        String[] campos = new String[] {ID, MINUTOS,INICIO};
+        String QB= NOMBRE_TABLA +
+                " JOIN " + TABLE_FK + " ON " +
+                NOMBRE_TABLA+"."+JUEGO + " = " + TABLE_FK+"."+FK_ID;
+
+
+        String[] campos = new String[] {JUEGO, DBJuego.NOMBRE , MINUTOS, DBJuego.LOGO};
         //Cursor c = db.query(NOMBRE_TABLA, campos, "usuario=?(where)", args(para el where), group by, having, order by, num);
 
         String[] args = new String[] {id};
 
-        if(id==null)return db.query(NOMBRE_TABLA, campos, null, null, null, null,null);
-        return db.query(NOMBRE_TABLA, campos, ID+"=?", args, null, null, null);
+        if(id==null)return db.query(QB, campos, null, null, null, null,null);
+        return db.query(QB, campos, ID+"=?", args, null, null, null);
     }
 
-    public Cursor consultarSemana(){
-        String[] campos = new String[] {JUEGO, "sum("+MINUTOS+")","strftime('%Y-%m-%d',"+INICIO+ ")"};
 
-        return db.query(NOMBRE_TABLA, campos, null, null,"1,3", null, "1,3");
+
+    public Cursor consultarSemana(){
+
+        String QB= NOMBRE_TABLA +
+                " JOIN " + TABLE_FK + " ON " +
+                NOMBRE_TABLA+"."+JUEGO + " = " + TABLE_FK+"."+FK_ID;
+
+
+        String[] campos = new String[] {JUEGO,TABLE_FK+"."+DBJuego.NOMBRE, "sum("+MINUTOS+")","strftime('%Y-%m-%d',"+INICIO+ ")"};
+
+        return db.query(QB, campos, null, null,"1,2,4", null, "1,4");
     }
 
 

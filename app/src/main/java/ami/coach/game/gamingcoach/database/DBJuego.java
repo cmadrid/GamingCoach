@@ -10,10 +10,10 @@ import java.util.Date;
 
 public class DBJuego {
     public static final String NOMBRE_TABLA = "juegos";
-    public static final String ID = "_id";
-    public static final String NOMBRE = "nombre";
-    public static final String LOGO = "logo";
-    public static final String MINUTOS = "minutos";
+    public static final String ID = "_id_juego";
+    public static final String NOMBRE = "nombre_juego";
+    public static final String LOGO = "logo_juego";
+    public static final String MINUTOS = "minutos_juego";
     public Context ctx;
 
 

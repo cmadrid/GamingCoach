@@ -4,15 +4,11 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.SystemClock;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 
-import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
 

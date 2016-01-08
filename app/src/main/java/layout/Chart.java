@@ -56,7 +56,7 @@ public class Chart extends Fragment {
 
         ArrayList<ChartItem> list = new ArrayList<ChartItem>();
 
-        crearMaps();
+        //crearMaps();
         crearMapasV();
 
         list.add(new LineChartItem(generateDataLine(mapaTest),getActivity()));
@@ -122,7 +122,7 @@ public class Chart extends Fragment {
     }
 
 
-
+/*
     public void crearMaps() {
 
         mapaTest = new HashMap<String,ArrayList<Entry>>();
@@ -161,7 +161,7 @@ public class Chart extends Fragment {
         horas.add(new Entry(1,6));
         mapaTest.put("Crash Bandicoot", horas);
 
-    }
+    }*/
 
     /** adapter that supports 3 different item types */
     private class ChartDataAdapter extends ArrayAdapter<ChartItem> {
@@ -235,6 +235,7 @@ public class Chart extends Fragment {
         DBSesiones db_sesiones=new DBSesiones(getActivity());
         Cursor datos = db_sesiones.consultarSemana();
         int juego=0;
+        String juego_nombre=null;
         mapaTest=new HashMap<>();
         ArrayList<Entry> juegos=new ArrayList<>();
         int indice=0;
@@ -244,21 +245,22 @@ public class Chart extends Fragment {
 
                 if(juego!=datos.getInt(0) && juego!=0)
                 {
-                    mapaTest.put(juego+"",juegos);
+                    mapaTest.put(juego_nombre,juegos);
                     juegos = new ArrayList<>();
                     indice=0;
                 }
 
                 juego=datos.getInt(0);
-                juegos.add(new Entry(datos.getInt(1), indice));
+                juego_nombre=datos.getString(1);
+                juegos.add(new Entry(datos.getInt(2), indice));
                 indice++;
 
-                System.out.println(datos.getInt(0));
                 System.out.println(datos.getInt(1));
-                System.out.println(datos.getString(2));
+                System.out.println(datos.getInt(2));
+                System.out.println(datos.getString(3));
             } while(datos.moveToNext());
 
-            mapaTest.put(juego+"",juegos);
+            mapaTest.put(juego_nombre,juegos);
         }
 
         db_sesiones.close();
