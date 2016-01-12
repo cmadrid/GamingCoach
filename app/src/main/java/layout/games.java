@@ -1,7 +1,9 @@
 package layout;
 
 
+import android.content.Context;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -17,6 +19,7 @@ import ami.coach.game.gamingcoach.views.GameView;
 public class games extends Fragment {
 
     private LinearLayout ll_juegos;
+    private View sesionAct;
     public static games newInstance() {
         games fragment = new games();
         return fragment;
@@ -35,6 +38,9 @@ public class games extends Fragment {
             return V;
 
         }
+
+
+
         public void addGames(){
             //consulta de las sesiones
             DBSesiones db_sesiones = new DBSesiones(getActivity());
@@ -58,6 +64,29 @@ public class games extends Fragment {
 
 
 
+        }
+
+        private class GetCurrentSession extends AsyncTask{
+
+            Context ctx;
+            DBSesiones dbs;
+
+            public GetCurrentSession(Context ctx,DBSesiones dbs) {
+                this.ctx = ctx;
+                this.dbs = dbs;
+            }
+
+            @Override
+            protected Object doInBackground(Object[] params) {
+
+                Cursor datos = dbs.consultar(null);
+                if (datos.moveToFirst()){
+
+                }
+
+
+                return null;
+            }
         }
 
     }

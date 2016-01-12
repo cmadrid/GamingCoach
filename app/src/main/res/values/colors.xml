@@ -7,4 +7,5 @@
     <color name="offline">#b50000</color>
     <color name="red1">#ff0000</color>
     <color name="green1">#54d42a</color>
+    <color name="black">#000000</color>
 </resources>

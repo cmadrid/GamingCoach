@@ -76,14 +76,18 @@ public class Chart extends Fragment {
 
         Iterator it = entradas.entrySet().iterator();
         ArrayList<LineDataSet> sets = new ArrayList<LineDataSet>();
+        int i =0;
         while(it.hasNext()){
             Map.Entry current = (Map.Entry) it.next();
             LineDataSet d1 = new LineDataSet((ArrayList)current.getValue(), ""+current.getKey());
             d1.setLineWidth(2.5f);
             d1.setCircleSize(4.5f);
             d1.setHighLightColor(Color.rgb(244, 117, 117));
+            d1.setColor(ColorTemplate.VORDIPLOM_COLORS[i]);
+            d1.setCircleColor(ColorTemplate.VORDIPLOM_COLORS[i]);
             d1.setDrawValues(false);
             sets.add(d1);
+            i++;
         }
 
         LineData cd = new LineData(getWeekDays(), sets);
@@ -115,7 +119,8 @@ public class Chart extends Fragment {
 
         // space between slices
         d.setSliceSpace(2f);
-        d.setColors(ColorTemplate.VORDIPLOM_COLORS);
+        d.setColors(ColorTemplate.COLORFUL_COLORS);
+        d.setValueTextColor(R.color.black);
 
         PieData cd = new PieData(labels,d);
         return cd;
