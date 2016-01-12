@@ -19,7 +19,7 @@ import ami.coach.game.gamingcoach.views.GameView;
 public class games extends Fragment {
 
     private LinearLayout ll_juegos;
-    private View sesionAct;
+    private GameView sesionAct=null;
     public static games newInstance() {
         games fragment = new games();
         return fragment;
@@ -44,12 +44,15 @@ public class games extends Fragment {
         public void addGames(){
             //consulta de las sesiones
             DBSesiones db_sesiones = new DBSesiones(getActivity());
+            GetCurrentSession obtenerSesionAct = new GetCurrentSession(getContext());
+            obtenerSesionAct.execute();
             Cursor datos = db_sesiones.consultar(null);
             if (datos.moveToFirst()) {
                 do {
-                    ll_juegos.addView(GameView.newInstance(getContext(),datos.getString(1),"Tiempo de juego en minutos: "+datos.getString(2),datos.getString(3)));
-                } while(datos.moveToNext());
+                    ll_juegos.addView(GameView.newInstance(getContext(), datos.getString(1), "Tiempo de juego en minutos: " + datos.getString(2), datos.getString(3),datos.getInt(4)));
+                } while (datos.moveToNext());
             }
+
             db_sesiones.close();
 
             //consulta de todos los juegos con el tiempo acumulado de x vida
@@ -57,7 +60,7 @@ public class games extends Fragment {
             datos = db_juego.consultar(null);
             if (datos.moveToFirst()) {
                 do {
-                    ll_juegos.addView(GameView.newInstance(getContext(),datos.getString(1),"Tiempo de juego en minutos: "+datos.getString(2),datos.getString(3)));
+                    ll_juegos.addView(GameView.newInstance(getContext(),datos.getString(1),"Tiempo de juego en minutos: "+datos.getString(2),datos.getString(3),datos.getInt(4)));
                 } while(datos.moveToNext());
             }
             db_juego.close();
@@ -71,21 +74,59 @@ public class games extends Fragment {
             Context ctx;
             DBSesiones dbs;
 
-            public GetCurrentSession(Context ctx,DBSesiones dbs) {
+            public GetCurrentSession(Context ctx) {
                 this.ctx = ctx;
-                this.dbs = dbs;
             }
 
             @Override
             protected Object doInBackground(Object[] params) {
 
-                Cursor datos = dbs.consultar(null);
-                if (datos.moveToFirst()){
+                while(!this.isCancelled()) {
+                    dbs = new DBSesiones(ctx);
+                    Cursor datos = dbs.consultarActivos(null);
+                    if (datos.moveToFirst()) {
+                        if (sesionAct == null) {
+                            publishProgress(datos.getInt(4), datos.getString(1), datos.getString(2), datos.getString(3), 0);
+                        } else {
+                            publishProgress(datos.getInt(4), datos.getString(1), datos.getString(2), datos.getString(3), 1);
+                        }
+                    } else {
+                        sesionAct = null;
+                    }
+                    dbs.close();
+                    try {
+                        Thread.sleep(10*60*1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+
+                }
+                return null;
+            }
+
+            @Override
+            protected void onProgressUpdate(Object[] values) {
+                super.onProgressUpdate(values);
+                int caso = (Integer)values[4];
+                if(caso==0){
+                    sesionAct= GameView.newInstance(getContext(),"Activo: "+(String)values[1],"Tiempo de juego en minutos: "+(String)values[2],(String)values[3],(Integer)values[0]);
+                    ll_juegos.addView(sesionAct,0);
+                }else if(caso==1){
+                    if(sesionAct.getSessionID()==(Integer)values[0]){
+                        sesionAct.setDuracion((String)values[2]);
+                    }else{
+                        ll_juegos.removeViewAt(0);
+                        String lbl = sesionAct.getNombre().getText().toString();
+                        ll_juegos.addView(GameView.newInstance(getContext(),lbl.replace("Activo: ",""),"Tiempo de juego en minutos: "+sesionAct.getDuracion(),sesionAct.getStrLogo(),sesionAct.getSessionID()),0);
+                        sesionAct=GameView.newInstance(getContext(),"Activo: "+(String)values[1],"Tiempo de juego en minutos: "+(String)values[2],(String)values[3],(Integer)values[0]);
+                        ll_juegos.addView(sesionAct,0);
+                    }
+
+                }else{
+                    sesionAct=null;
 
                 }
 
-
-                return null;
             }
         }
 
