@@ -57,8 +57,7 @@ public class DBSesiones {
     }
 
 
-    public Cursor consultarActivos(String juego){
-        //insert  into contactos
+    public Cursor consultarActivos(String juego) {
 
         String[] campos = new String[] {ID, JUEGO , MINUTOS,INICIO};
         //Cursor c = db.query(NOMBRE_TABLA, campos, "usuario=?(where)", args(para el where), group by, having, order by, num);
