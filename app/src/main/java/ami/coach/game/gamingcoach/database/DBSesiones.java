@@ -99,8 +99,8 @@ public class DBSesiones {
 
         String QB= NOMBRE_TABLA +
                 " JOIN " + TABLE_FK + " ON " + JUEGO + " = "+FK_ID+
-                " RIGHT JOIN " + DBIndices.NOMBRE_TABLA + " ON strftime('%w',"+INICIO+")="+DBIndices.COD +" AND "+DBIndices.GROUP+"='dias'" ;
-
+                //" RIGHT JOIN " + DBIndices.NOMBRE_TABLA + " ON strftime('%w',"+INICIO+")="+DBIndices.COD +" AND "+DBIndices.GROUP+"='dias'" +
+                "";
         String[] args = new String[] {dateFormat.format(desde)};
 
 
