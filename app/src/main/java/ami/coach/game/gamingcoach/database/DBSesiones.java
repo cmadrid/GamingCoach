@@ -99,13 +99,13 @@ public class DBSesiones {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd 00:00");
 
         String QB= NOMBRE_TABLA +
-                " JOIN " + TABLE_FK + " ON " +
-                NOMBRE_TABLA+"."+JUEGO + " = " + TABLE_FK+"."+FK_ID;
+                " JOIN " + TABLE_FK + " ON " + JUEGO + " = "+FK_ID+
+                " RIGHT JOIN " + DBIndices.NOMBRE_TABLA + " ON strftime('%w',"+INICIO+")="+DBIndices.COD +" AND "+DBIndices.GROUP+"='dias'" ;
 
         String[] args = new String[] {dateFormat.format(desde)};
 
 
-        String[] campos = new String[] {JUEGO,TABLE_FK+"."+DBJuego.NOMBRE, "sum("+MINUTOS+")","strftime('%Y-%m-%d',"+INICIO+ ")"};
+        String[] campos = new String[] {JUEGO,TABLE_FK+"."+DBJuego.NOMBRE, "sum("+MINUTOS+")","strftime('%Y-%m-%d',"+INICIO+ ")","strftime('%w',"+INICIO+")"};
 
         return db.query(QB, campos, INICIO+">?", args,"1,2,4", null, "1,4");
     }

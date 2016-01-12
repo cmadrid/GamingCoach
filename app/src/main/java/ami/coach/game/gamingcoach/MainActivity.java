@@ -28,6 +28,7 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
+import ami.coach.game.gamingcoach.database.DBIndices;
 import ami.coach.game.gamingcoach.database.DBJuego;
 import ami.coach.game.gamingcoach.database.DBSesiones;
 import layout.Chart;
@@ -175,6 +176,9 @@ public class MainActivity extends AppCompatActivity {
             DBJuego db_juego=new DBJuego(this);
             db_juego.vaciar();
             db_juego.close();
+            DBIndices db_indices=new DBIndices(this);
+            db_indices.vaciar();
+            db_indices.close();
             stopService(new Intent(getBaseContext(),ServiceBackground.class));
             
             return true;

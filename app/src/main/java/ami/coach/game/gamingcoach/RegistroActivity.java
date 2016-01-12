@@ -34,6 +34,7 @@ import java.util.Date;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import ami.coach.game.gamingcoach.database.DBIndices;
 import ami.coach.game.gamingcoach.database.DBSesiones;
 
 /**
@@ -144,8 +145,21 @@ public class RegistroActivity extends AppCompatActivity{
         //if(consultando!=null)consultando.dismiss();
         Intent intent = new Intent(activity, MainActivity.class);
         startActivity(intent);
+        llenarIndices();
         llenarSesiones();
         activity.finish();
+    }
+
+    public void llenarIndices(){
+        DBIndices indices = new DBIndices(ctx);
+        indices.insertar(0,"Domingo","dias");
+        indices.insertar(1,"Lunes","dias");
+        indices.insertar(2,"Martes","dias");
+        indices.insertar(3,"Miercoles","dias");
+        indices.insertar(4,"Jueves","dias");
+        indices.insertar(5,"Viernes","dias");
+        indices.insertar(6,"Sabado","dias");
+        indices.close();
     }
 
     public void llenarSesiones(){
