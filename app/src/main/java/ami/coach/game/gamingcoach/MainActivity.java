@@ -16,11 +16,9 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,7 +26,6 @@ import android.widget.TextView;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-import ami.coach.game.gamingcoach.database.DBIndices;
 import ami.coach.game.gamingcoach.database.DBJuego;
 import ami.coach.game.gamingcoach.database.DBSesiones;
 import layout.Chart;
@@ -176,9 +173,6 @@ public class MainActivity extends AppCompatActivity {
             DBJuego db_juego=new DBJuego(this);
             db_juego.vaciar();
             db_juego.close();
-            DBIndices db_indices=new DBIndices(this);
-            db_indices.vaciar();
-            db_indices.close();
             stopService(new Intent(getBaseContext(),ServiceBackground.class));
             
             return true;

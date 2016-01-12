@@ -211,26 +211,26 @@ public class Chart extends Fragment {
         String juego_nombre=null;
         mapaTest=new HashMap<>();
         ArrayList<Entry> juegos=new ArrayList<>();
-        int indice=0;
+        //int indice=0;
         if (datos.moveToFirst()) {
+            for(int i=0;i<7;i++)juegos.add(new Entry(0,i));//guardamos en cero ese juego en todos los dias inicialmente
+
             //Recorremos el cursor hasta que no haya más registros
             do {
 
                 if(juego!=datos.getInt(0) && juego!=0)
                 {
-                    mapaTest.put(juego_nombre,juegos);
-                    juegos = new ArrayList<>();
-                    indice=0;
+                    mapaTest.put(juego_nombre,juegos);//a partir de un segundo juego se almacena en el hashmap
+                    juegos = new ArrayList<Entry>();//se reinicia la lista para el nuevo juego
+                    for(int i=0;i<7;i++)juegos.add(new Entry(0,i));//se vuelve a encerar los dias
+
                 }
 
                 juego=datos.getInt(0);
                 juego_nombre=datos.getString(1);
-                juegos.add(new Entry(datos.getInt(2), indice));
-                indice++;
+                int indice = Integer.parseInt(datos.getString(4));
+                juegos.get(indice).setVal(datos.getInt(2));
 
-                System.out.println(datos.getInt(1));
-                System.out.println(datos.getInt(2));
-                System.out.println(datos.getString(3));
             } while(datos.moveToNext());
 
             mapaTest.put(juego_nombre,juegos);

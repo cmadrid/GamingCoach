@@ -28,7 +28,6 @@ public class DbHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(DBJuego.CREATE_TABLE);
         db.execSQL(DBSesiones.CREATE_TABLE);
-        db.execSQL(DBIndices.CREATE_TABLE);
     }
 
     @Override
