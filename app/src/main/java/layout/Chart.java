@@ -21,6 +21,7 @@ import com.github.mikephil.charting.utils.ColorTemplate;
 
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -56,7 +57,6 @@ public class Chart extends Fragment {
 
         ArrayList<ChartItem> list = new ArrayList<ChartItem>();
 
-        //crearMaps();
         crearMapasV();
 
         list.add(new LineChartItem(generateDataLine(mapaTest),getActivity()));
@@ -122,47 +122,6 @@ public class Chart extends Fragment {
     }
 
 
-/*
-    public void crearMaps() {
-
-        mapaTest = new HashMap<String,ArrayList<Entry>>();
-        ArrayList<Entry> horas = new ArrayList<Entry>();
-
-        horas.add(new Entry(0,0));
-        horas.add(new Entry(2, 1));
-        horas.add(new Entry(3, 2));
-        horas.add(new Entry(0, 3));
-        horas.add(new Entry(2, 4));
-        horas.add(new Entry(5, 5));
-        horas.add(new Entry(0, 6));
-        mapaTest.put("Resident Evil 5", horas);
-
-
-        horas=new ArrayList<>();
-
-        horas.add(new Entry(3,0));
-        horas.add(new Entry(0,1));
-        horas.add(new Entry(2,2));
-        horas.add(new Entry(4,3));
-        horas.add(new Entry(0,4));
-        horas.add(new Entry(5,5));
-        horas.add(new Entry(3,6));
-        mapaTest.put("Metal Gear Solid 5", horas);
-
-
-        horas=new ArrayList<>();
-
-        horas.add(new Entry(1,0));
-        horas.add(new Entry(0,1));
-        horas.add(new Entry(4,2));
-        horas.add(new Entry(1,3));
-        horas.add(new Entry(2,4));
-        horas.add(new Entry(3,5));
-        horas.add(new Entry(1,6));
-        mapaTest.put("Crash Bandicoot", horas);
-
-    }*/
-
     /** adapter that supports 3 different item types */
     private class ChartDataAdapter extends ArrayAdapter<ChartItem> {
 
@@ -220,20 +179,29 @@ public class Chart extends Fragment {
     private ArrayList<String> getWeekDays() {
 
         ArrayList<String> m = new ArrayList<String>();
+        m.add("Dom");
         m.add("Lun");
         m.add("Mar");
         m.add("Mie");
         m.add("Jue");
         m.add("Vie");
         m.add("Sab");
-        m.add("Dom");
 
         return m;
     }
 
     public void crearMapasV(){
+
+
+        Calendar cal = Calendar.getInstance();
+        int dia = cal.get(Calendar.DAY_OF_WEEK)-1;//Empieza con domingo=1 y termina con sabsado=7
+
+        cal.add(Calendar.DAY_OF_MONTH, dia*-1);
+
+
+
         DBSesiones db_sesiones=new DBSesiones(getActivity());
-        Cursor datos = db_sesiones.consultarSemana();
+        Cursor datos = db_sesiones.consultarSemana(cal.getTime());
         int juego=0;
         String juego_nombre=null;
         mapaTest=new HashMap<>();

@@ -55,7 +55,7 @@ public class DBJuego {
                // System.out.println("minutos no coinciden!!!: " + minutos_antes + " - " + minutos);
 
                 DBSesiones dbSesiones=new DBSesiones(ctx);
-                dbSesiones.insertar(id,(minutos-minutos_antes)+"",new Date());
+                dbSesiones.insertaroActualizar(id,(minutos-minutos_antes)+"",new Date());
                 dbSesiones.close();
 
                 db.update(NOMBRE_TABLA, generarContentValues(id, nombre, logo, minutos), ID + "=?", args);

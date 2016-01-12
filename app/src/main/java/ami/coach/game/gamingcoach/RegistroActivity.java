@@ -159,7 +159,7 @@ public class RegistroActivity extends AppCompatActivity{
         String id7="423880";
 
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.DAY_OF_MONTH, -5);
+        //calendar.add(Calendar.DAY_OF_MONTH, -5);
         DBSesiones dbSesiones=new DBSesiones(ctx);
 
         dbSesiones.insertar(id1, 35 + "", calendar.getTime());
