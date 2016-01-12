@@ -107,7 +107,7 @@ public class DBSesiones {
 
         String[] campos = new String[] {JUEGO,TABLE_FK+"."+DBJuego.NOMBRE, "sum("+MINUTOS+")","strftime('%Y-%m-%d',"+INICIO+ ")"};
 
-        return db.query(QB, campos, INICIO+">?", args,"1,2,4", ,4");
+        return db.query(QB, campos, INICIO+">?", args,"1,2,4", null, "1,4");
     }
 
 
