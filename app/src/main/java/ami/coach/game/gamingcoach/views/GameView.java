@@ -1,9 +1,5 @@
 package ami.coach.game.gamingcoach.views;
 
-/**
- * Created by Jegerima on 25/01/2015.
- */
-
 import android.content.Context;
 import android.net.Uri;
 import android.util.AttributeSet;
@@ -15,22 +11,21 @@ import android.widget.TextView;
 
 import ami.coach.game.gamingcoach.R;
 
-/**
- * Created by Jegerima on 25/01/2015.
- */
 public class GameView extends FrameLayout {
 
     private TextView nombre_juego;
     private TextView duracion_sesion;
+    private int sessionID;
     private ImageView logo_juego;
+    private String strLogo;
 
     private Context mContext;
     private View mHeader;
 
     //private enum estado{'A Entegar',Entregado,Atrasado,};
-    public static GameView newInstance(Context ctx,String nombre,String duracion,String ruta) {
+    public static GameView newInstance(Context ctx,String nombre,String duracion,String ruta,int sessionID) {
         GameView view = new GameView(ctx);
-        view.setParams(nombre,duracion,ruta);
+        view.setParams(nombre,duracion,ruta,sessionID);
         return view;
     }
     public GameView(Context context, AttributeSet attrs, int defStyle)
@@ -60,10 +55,12 @@ public class GameView extends FrameLayout {
         logo_juego = (ImageView)mHeader.findViewById(R.id.logo_juego);
     }
 
-    public void setParams(String titulo,String duracion, String ruta){
+    public void setParams(String titulo,String duracion, String ruta,int sessionID){
         setNombre(titulo);
         setDuracion(duracion);
         setLogo(ruta);
+        this.strLogo = ruta;
+        this.sessionID = sessionID;
     }
 
     public void setNombre(String nombre){
@@ -73,11 +70,23 @@ public class GameView extends FrameLayout {
         duracion_sesion.setText(duracion);
     }
 
+    public int getSessionID(){
+        return this.sessionID;
+    }
+
+    public String getStrLogo() {
+        return strLogo;
+    }
+
     public TextView getNombre() {
         return nombre_juego;
     }
     public TextView getDuracion() {
         return duracion_sesion;
+    }
+
+    public ImageView getLogo_juego() {
+        return logo_juego;
     }
 
     public void setLogo(String ruta){

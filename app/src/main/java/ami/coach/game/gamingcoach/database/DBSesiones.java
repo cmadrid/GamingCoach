@@ -82,7 +82,7 @@ public class DBSesiones {
                 NOMBRE_TABLA+"."+JUEGO + " = " + TABLE_FK+"."+FK_ID;
 
 
-        String[] campos = new String[] {JUEGO, DBJuego.NOMBRE , MINUTOS, DBJuego.LOGO};
+        String[] campos = new String[] {JUEGO, DBJuego.NOMBRE , MINUTOS, DBJuego.LOGO,ID};
         //Cursor c = db.query(NOMBRE_TABLA, campos, "usuario=?(where)", args(para el where), group by, having, order by, num);
 
         String[] args = new String[] {id};
