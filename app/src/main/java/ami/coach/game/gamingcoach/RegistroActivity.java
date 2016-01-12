@@ -1,6 +1,5 @@
 package ami.coach.game.gamingcoach;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,32 +8,13 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.AlertDialog;
-import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.w3c.dom.Document;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.URL;
 import java.util.Calendar;
-import java.util.Date;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-
-import ami.coach.game.gamingcoach.database.DBIndices;
 import ami.coach.game.gamingcoach.database.DBSesiones;
 
 /**
@@ -135,7 +115,11 @@ public class RegistroActivity extends AppCompatActivity{
         consultando.setCanceledOnTouchOutside(false);
         consultando.setCancelable(true);
         consultando.setButton(DialogInterface.BUTTON_NEGATIVE, "Cancelar", new DialogInterface.OnClickListener() {
-            @Override public void onClick(DialogInterface dialog, int which){dialog.dismiss();hilo.cancel(true);}
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.dismiss();
+                hilo.cancel(true);
+            }
         });
         consultando.show();
     }
@@ -145,21 +129,8 @@ public class RegistroActivity extends AppCompatActivity{
         //if(consultando!=null)consultando.dismiss();
         Intent intent = new Intent(activity, MainActivity.class);
         startActivity(intent);
-        llenarIndices();
         llenarSesiones();
         activity.finish();
-    }
-
-    public void llenarIndices(){
-        DBIndices indices = new DBIndices(ctx);
-        indices.insertar(0,"Domingo","dias");
-        indices.insertar(1,"Lunes","dias");
-        indices.insertar(2,"Martes","dias");
-        indices.insertar(3,"Miercoles","dias");
-        indices.insertar(4,"Jueves","dias");
-        indices.insertar(5,"Viernes","dias");
-        indices.insertar(6,"Sabado","dias");
-        indices.close();
     }
 
     public void llenarSesiones(){
@@ -178,7 +149,7 @@ public class RegistroActivity extends AppCompatActivity{
 
         dbSesiones.insertar(id1, 35 + "", calendar.getTime());
         calendar.add(Calendar.DAY_OF_MONTH, -1);
-        dbSesiones.insertar(id1, 50 + "", calendar.getTime());
+        dbSesiones.insertar(id1, 0 + "", calendar.getTime());
         calendar.add(Calendar.DAY_OF_MONTH, -1);
         dbSesiones.insertar(id1, 10 + "", calendar.getTime());
         calendar.add(Calendar.DAY_OF_MONTH, -1);
@@ -191,7 +162,7 @@ public class RegistroActivity extends AppCompatActivity{
         dbSesiones.insertar(id1, 115 + "", calendar.getTime());
 
         calendar.add(Calendar.DAY_OF_MONTH, 6);
-        dbSesiones.insertar(id2, 15 + "", calendar.getTime());
+        dbSesiones.insertar(id2, 0 + "", calendar.getTime());
         calendar.add(Calendar.DAY_OF_MONTH, -1);
         dbSesiones.insertar(id2, 35 + "", calendar.getTime());
         calendar.add(Calendar.DAY_OF_MONTH, -1);
