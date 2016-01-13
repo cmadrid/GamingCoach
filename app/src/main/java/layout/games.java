@@ -54,7 +54,7 @@ public class games extends Fragment {
             }
 
             db_sesiones.close();
-
+/*
             //consulta de todos los juegos con el tiempo acumulado de x vida
             DBJuego db_juego=new DBJuego(getActivity());
             datos = db_juego.consultar(null);
@@ -64,7 +64,7 @@ public class games extends Fragment {
                 } while(datos.moveToNext());
             }
             db_juego.close();
-
+*/
 
 
         }
@@ -83,12 +83,12 @@ public class games extends Fragment {
 
                 while(!this.isCancelled()) {
                     dbs = new DBSesiones(ctx);
-                    Cursor datos = dbs.consultarActivos(null);
+                    Cursor datos = dbs.consultarActivos(null);//ID_SESSION,ID_JUEGO,MINUTOS,FECHA_INICIO,NOMBRE_JUEGO,LOGO
                     if (datos.moveToFirst()) {
                         if (sesionAct == null) {
-                            publishProgress(datos.getInt(4), datos.getString(1), datos.getString(2), datos.getString(3), 0);
+                            publishProgress(datos.getInt(0), datos.getString(4), datos.getString(2), datos.getString(3),datos.getString(5), 0);
                         } else {
-                            publishProgress(datos.getInt(4), datos.getString(1), datos.getString(2), datos.getString(3), 1);
+                            publishProgress(datos.getInt(0), datos.getString(4), datos.getString(2), datos.getString(3),datos.getString(5), 1);
                         }
                     } else {
                         sesionAct = null;
@@ -107,9 +107,9 @@ public class games extends Fragment {
             @Override
             protected void onProgressUpdate(Object[] values) {
                 super.onProgressUpdate(values);
-                int caso = (Integer)values[4];
+                int caso = (Integer)values[5];
                 if(caso==0){
-                    sesionAct= GameView.newInstance(getContext(),"Activo: "+(String)values[1],"Tiempo de juego en minutos: "+(String)values[2],(String)values[3],(Integer)values[0]);
+                    sesionAct= GameView.newInstance(getContext(),"Activo: "+(String)values[1],"Tiempo de juego en minutos: "+(String)values[2],(String)values[4],(Integer)values[0]);
                     ll_juegos.addView(sesionAct,0);
                 }else if(caso==1){
                     if(sesionAct.getSessionID()==(Integer)values[0]){

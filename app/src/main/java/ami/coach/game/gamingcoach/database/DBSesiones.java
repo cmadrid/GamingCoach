@@ -57,19 +57,23 @@ public class DBSesiones {
         if(!c.moveToFirst())
             db.insert(NOMBRE_TABLA,null,generarContentValues(juego, minutos, inicio));
         else
-            db.update(NOMBRE_TABLA, generarContentValues(juego, (c.getInt(2)+Integer.parseInt(minutos))+"", null), ID + "=?", new String[]{c.getString(0)});
+            db.update(NOMBRE_TABLA, generarContentValues(juego, (c.getInt(2) + Integer.parseInt(minutos)) + "", null), ID + "=?", new String[]{c.getString(0)});
 
     }
 
 
     public Cursor consultarActivos(String juego) {
 
-        String[] campos = new String[] {ID, JUEGO , MINUTOS,INICIO};
+        String QB= NOMBRE_TABLA +
+                " JOIN " + TABLE_FK + " ON " +
+                NOMBRE_TABLA+"."+JUEGO + " = " + TABLE_FK+"."+FK_ID;
+
+        String[] campos = new String[] {ID, JUEGO, MINUTOS,INICIO,DBJuego.NOMBRE,DBJuego.LOGO};
         //Cursor c = db.query(NOMBRE_TABLA, campos, "usuario=?(where)", args(para el where), group by, having, order by, num);
 
         String[] args = new String[] {juego};
 
-        if(juego==null) return db.query(NOMBRE_TABLA, campos, null, null, null, null,null);
+        if(juego==null) return db.query(QB, campos, null, null, null, null,null);
         else
             return db.query(NOMBRE_TABLA, campos, JUEGO + "=? and date('now','-10 minutes')<" + ACTUAIZACION, args, null, null, ACTUAIZACION+" desc");
 
