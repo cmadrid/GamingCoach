@@ -2,6 +2,7 @@
     <string name="app_name">Gaming Coach</string>
     <string name="action_settings">Settings</string>
     <string name="cerrar_sesion">Cerrar Sesión</string>
+    <string name="mostrar_alerta">Mostrar Alerta</string>
     <string name="section_format">Hello World from section: %1$d</string>
     <string name="registro_usuario">Registro de Usuario</string>
     <string name="steam_id">Id de Steam:</string>

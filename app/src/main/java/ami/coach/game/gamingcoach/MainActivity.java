@@ -1,5 +1,8 @@
 package ami.coach.game.gamingcoach;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -41,8 +44,10 @@ public class MainActivity extends AppCompatActivity {
      * may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
-    static MainActivity mainActivity=null;
+    public static MainActivity mainActivity=null;
     private SectionsPagerAdapter mSectionsPagerAdapter;
+    games actividades = games.newInstance();
+    Chart estadisticas = Chart.newInstance();
 
     /**
      * The {@link ViewPager} that will host the section contents.
@@ -139,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         mainActivity=null;
+        actividades.stop();
     }
 
     @Override
@@ -147,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
@@ -174,8 +179,13 @@ public class MainActivity extends AppCompatActivity {
             db_juego.vaciar();
             db_juego.close();
             stopService(new Intent(getBaseContext(),ServiceBackground.class));
+
+            actividades.stop();
             
             return true;
+        }
+        else if (id==R.id.mostrar_alerta){
+            notificacion();
         }
 
         return super.onOptionsItemSelected(item);
@@ -199,8 +209,8 @@ public class MainActivity extends AppCompatActivity {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
             if(position==0)
-                return games.newInstance();
-            else return Chart.newInstance();
+                return actividades;
+            else return estadisticas;
         }
 
         @Override
@@ -221,6 +231,35 @@ public class MainActivity extends AppCompatActivity {
             }
             return null;
         }
+    }
+
+    public void notificacion(){
+        int iUniqueId = (int) (System.currentTimeMillis() & 0xfffffff);
+
+        String title="aaaaaaaaa";
+        String content="sssssssss";
+
+
+        Intent intent = new Intent(mainActivity,MainActivity.class);
+
+        intent.putExtra("title",title);
+        intent.putExtra("content",content);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+        PendingIntent pIntent = PendingIntent.getActivity(mainActivity, iUniqueId, intent, 0);
+        Notification noti = new Notification.Builder(mainActivity)
+                .setTicker("Gaming Coach Notification")
+                .setContentTitle("Gaming Coach - "+title)
+                .setContentText(content)
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentIntent(pIntent)
+                .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000 })
+                .setLights(Color.RED, 3000, 3000)
+                .setSound(Uri.parse("uri://sadfasdfasdf.mp3"))
+                .getNotification();
+        noti.flags=Notification.FLAG_AUTO_CANCEL;
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notificationManager.notify(0, noti);
     }
 
 }

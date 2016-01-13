@@ -65,17 +65,18 @@ public class DBSesiones {
     public Cursor consultarActivos(String juego) {
 
         String QB= NOMBRE_TABLA +
-                " JOIN " + TABLE_FK + " ON " +
-                NOMBRE_TABLA+"."+JUEGO + " = " + TABLE_FK+"."+FK_ID;
+                " JOIN " + DBJuego.NOMBRE_TABLA + " ON " +
+                JUEGO + " = " + DBJuego.ID;
 
         String[] campos = new String[] {ID, JUEGO, MINUTOS,INICIO,DBJuego.NOMBRE,DBJuego.LOGO};
         //Cursor c = db.query(NOMBRE_TABLA, campos, "usuario=?(where)", args(para el where), group by, having, order by, num);
 
         String[] args = new String[] {juego};
 
-        if(juego==null) return db.query(QB, campos, null, null, null, null,null);
+        if(juego==null)
+            return db.query(QB, campos, "datetime('now','-5 hours','-45 minutes')<" + ACTUAIZACION, null, null, null,ACTUAIZACION+" desc");
         else
-            return db.query(NOMBRE_TABLA, campos, JUEGO + "=? and datetime('now','-5 hours','-60 minutes')<" + ACTUAIZACION, args, null, null, ACTUAIZACION+" desc");
+            return db.query(QB, campos, JUEGO + "=? and datetime('now','-5 hours','-45 minutes')<" + ACTUAIZACION, args, null, null, ACTUAIZACION+" desc");
 
     }
     public Cursor consultar(String id){

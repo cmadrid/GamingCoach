@@ -142,7 +142,7 @@ public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
     @Override
     protected void onPostExecute(Object[] result) {
 
-        if(result==null){
+        if(result==null && ctx!=null){
 
             AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ctx);
             alertDialogBuilder.setTitle("No se encontro Usuario");

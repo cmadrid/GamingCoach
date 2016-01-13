@@ -11,6 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
+import java.util.Timer;
+import java.util.TimerTask;
+
+import ami.coach.game.gamingcoach.GetPerfilXml;
+import ami.coach.game.gamingcoach.MainActivity;
 import ami.coach.game.gamingcoach.R;
 import ami.coach.game.gamingcoach.database.DBJuego;
 import ami.coach.game.gamingcoach.database.DBSesiones;
@@ -44,8 +49,8 @@ public class games extends Fragment {
         public void addGames(){
             //consulta de las sesiones
             DBSesiones db_sesiones = new DBSesiones(getActivity());
-            GetCurrentSession obtenerSesionAct = new GetCurrentSession(getContext());
-            obtenerSesionAct.execute();
+            //GetCurrentSession obtenerSesionAct = new GetCurrentSession(getContext());
+            //obtenerSesionAct.execute();
             Cursor datos = db_sesiones.consultar(null);
             if (datos.moveToFirst()) {
                 do {
@@ -54,6 +59,8 @@ public class games extends Fragment {
             }
 
             db_sesiones.close();
+
+            start();
 /*
             //consulta de todos los juegos con el tiempo acumulado de x vida
             DBJuego db_juego=new DBJuego(getActivity());
@@ -69,6 +76,37 @@ public class games extends Fragment {
 
         }
 
+
+    private Timer timer;
+    private TimerTask timerTask = new TimerTask() {
+
+        @Override
+        public void run() {
+            System.out.println("loop activos");
+            MainActivity.mainActivity.
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            GetCurrentSession obtenerSesionAct = new GetCurrentSession(getContext());
+                            obtenerSesionAct.execute();
+                        }
+                    });;
+        }
+    };
+
+    public void start() {
+        if(timer != null) {
+            return;
+        }
+        timer = new Timer();
+        timer.scheduleAtFixedRate(timerTask, 0, 1*60*1000);
+    }
+
+    public void stop() {
+        timer.cancel();
+        timer = null;
+    }
+
         private class GetCurrentSession extends AsyncTask{
 
             Context ctx;
@@ -81,26 +119,19 @@ public class games extends Fragment {
             @Override
             protected Object doInBackground(Object[] params) {
 
-                while(!this.isCancelled()) {
-                    dbs = new DBSesiones(ctx);
-                    Cursor datos = dbs.consultarActivos(null);//ID_SESSION,ID_JUEGO,MINUTOS,FECHA_INICIO,NOMBRE_JUEGO,LOGO
-                    if (datos.moveToFirst()) {
-                        if (sesionAct == null) {
-                            publishProgress(datos.getInt(0), datos.getString(4), datos.getString(2), datos.getString(3),datos.getString(5), 0);
-                        } else {
-                            publishProgress(datos.getInt(0), datos.getString(4), datos.getString(2), datos.getString(3),datos.getString(5), 1);
-                        }
+                dbs = new DBSesiones(ctx);
+                Cursor datos = dbs.consultarActivos(null);//ID_SESSION,ID_JUEGO,MINUTOS,FECHA_INICIO,NOMBRE_JUEGO,LOGO
+                if (datos.moveToFirst()) {
+                    if (sesionAct == null) {
+                        publishProgress(datos.getInt(0), datos.getString(4), datos.getString(2), datos.getString(3),datos.getString(5), 0);
                     } else {
-                        sesionAct = null;
+                        publishProgress(datos.getInt(0), datos.getString(4), datos.getString(2), datos.getString(3),datos.getString(5), 1);
                     }
-                    dbs.close();
-                    try {
-                        Thread.sleep(10*60*1000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-
+                } else {
+                    sesionAct = null;
                 }
+                dbs.close();
+
                 return null;
             }
 

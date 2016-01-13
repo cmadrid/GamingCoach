@@ -149,26 +149,26 @@ public class RegistroActivity extends AppCompatActivity{
 
         dbSesiones.insertar(id1, 35 + "", calendar.getTime());
         calendar.add(Calendar.DAY_OF_MONTH, -1);
-        dbSesiones.insertar(id1, 0 + "", calendar.getTime());
+        //dbSesiones.insertar(id1, 0 + "", calendar.getTime());
         calendar.add(Calendar.DAY_OF_MONTH, -1);
         dbSesiones.insertar(id1, 10 + "", calendar.getTime());
         calendar.add(Calendar.DAY_OF_MONTH, -1);
-        dbSesiones.insertar(id1, 0 + "", calendar.getTime());
+        //dbSesiones.insertar(id1, 0 + "", calendar.getTime());
         calendar.add(Calendar.DAY_OF_MONTH, -1);
-        dbSesiones.insertar(id1, 0 + "", calendar.getTime());
+        //dbSesiones.insertar(id1, 0 + "", calendar.getTime());
         calendar.add(Calendar.DAY_OF_MONTH, -1);
         dbSesiones.insertar(id1, 5 + "", calendar.getTime());
         calendar.add(Calendar.DAY_OF_MONTH, -1);
         dbSesiones.insertar(id1, 115 + "", calendar.getTime());
 
         calendar.add(Calendar.DAY_OF_MONTH, 6);
-        dbSesiones.insertar(id2, 0 + "", calendar.getTime());
+        //dbSesiones.insertar(id2, 0 + "", calendar.getTime());
         calendar.add(Calendar.DAY_OF_MONTH, -1);
         dbSesiones.insertar(id2, 35 + "", calendar.getTime());
         calendar.add(Calendar.DAY_OF_MONTH, -1);
         dbSesiones.insertar(id2, 20 + "", calendar.getTime());
         calendar.add(Calendar.DAY_OF_MONTH, -1);
-        dbSesiones.insertar(id2, 0 + "", calendar.getTime());
+        //dbSesiones.insertar(id2, 0 + "", calendar.getTime());
         calendar.add(Calendar.DAY_OF_MONTH, -1);
         dbSesiones.insertar(id2, 10 + "", calendar.getTime());
         calendar.add(Calendar.DAY_OF_MONTH, -1);

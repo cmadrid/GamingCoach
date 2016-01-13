@@ -6,4 +6,8 @@
         android:title="@string/cerrar_sesion"
         android:orderInCategory="100"
         app:showAsAction="never" />
+    <item android:id="@+id/mostrar_alerta"
+        android:title="@string/mostrar_alerta"
+        android:orderInCategory="200"
+        app:showAsAction="never" />
 </menu>
