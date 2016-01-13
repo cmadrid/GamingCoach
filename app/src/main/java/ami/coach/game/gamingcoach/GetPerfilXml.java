@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.SystemClock;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.StatusLine;
@@ -43,11 +44,12 @@ public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
     protected Object[] doInBackground(String... params) {
         this.customUrl=params[0];
         Object result[] = new Object[6];
+        String token = SystemClock.currentThreadTimeMillis()+"";
         try {
 
             String usuario = params[0];//hario0
             System.out.println(usuario);
-            HttpGet uri = new HttpGet("http://steamcommunity.com/id/"+usuario+"?xml=1");
+            HttpGet uri = new HttpGet("http://steamcommunity.com/id/"+usuario+"?xml=1&token="+token);
 
             DefaultHttpClient client = new DefaultHttpClient();
             HttpResponse resp = client.execute(uri);
@@ -177,7 +179,7 @@ public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
             editor.putBoolean(RegistroActivity.Prefs.UserLog.name(), true);
         }
         editor.putString(RegistroActivity.Prefs.OnlineState.name(), result[1].toString());
-        editor.putString(RegistroActivity.Prefs.StateMessage.name(), result[2].toString());
+        editor.putString(RegistroActivity.Prefs.StateMessage.name(), result[2].toString().replace("<br/>",": "));
         editor.putLong(RegistroActivity.Prefs.updated.name(), millis);
         editor.commit();
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Environment;
+import android.os.SystemClock;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -44,11 +45,13 @@ public class GetJuegosXml extends AsyncTask<String,Void,Object[]> {
     @Override
     protected Object[] doInBackground(String... params) {
 
+        String token = SystemClock.currentThreadTimeMillis()+"";
         try{
             String idUsuario = params[0];
             String id64 = params[1];
-            HttpGet uri1 = new HttpGet("http://steamcommunity.com/id/"+idUsuario+"/games?tab=all&xml=1");
-            HttpGet uri2 = new HttpGet("http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=8CA1864E6DDD065C53651CF9F88404B2&steamid="+id64+"&format=xml");
+            HttpGet uri1 = new HttpGet("http://steamcommunity.com/id/"+idUsuario+"/games?tab=all&xml=1&token="+token);
+            HttpGet uri2 = new HttpGet("http://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/?key=8CA1864E6DDD065C53651CF9F88404B2&steamid="+id64+"&format=xml&token="+token);
+
 
             DefaultHttpClient client1 = new DefaultHttpClient();
             HttpResponse resp1 = client1.execute(uri1);

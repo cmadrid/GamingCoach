@@ -71,7 +71,7 @@ public class DBSesiones {
 
         if(juego==null) return db.query(NOMBRE_TABLA, campos, null, null, null, null,null);
         else
-            return db.query(NOMBRE_TABLA, campos, JUEGO + "=? and date('now','-10 minutes')<" + ACTUAIZACION, args, null, null, ACTUAIZACION+" desc");
+            return db.query(NOMBRE_TABLA, campos, JUEGO + "=? and datetime(datetime('now','-5 hours'),'-60 minutes')<" + ACTUAIZACION, args, null, null, ACTUAIZACION+" desc");
 
     }
     public Cursor consultar(String id){
