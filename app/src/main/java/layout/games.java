@@ -54,7 +54,7 @@ public class games extends Fragment {
             Cursor datos = db_sesiones.consultar(null);
             if (datos.moveToFirst()) {
                 do {
-                    ll_juegos.addView(GameView.newInstance(getContext(), datos.getString(1), "Tiempo de juego en minutos: " + datos.getString(2), datos.getString(3),datos.getInt(4)));
+                    ll_juegos.addView(GameView.newInstance(getContext(), datos.getString(1), "Game Time: " + datos.getString(2), datos.getString(3),datos.getInt(4)));
                 } while (datos.moveToNext());
             }
 
@@ -67,7 +67,7 @@ public class games extends Fragment {
             datos = db_juego.consultar(null);
             if (datos.moveToFirst()) {
                 do {
-                    ll_juegos.addView(GameView.newInstance(getContext(),datos.getString(1),"Tiempo de juego en minutos: "+datos.getString(2),datos.getString(3),datos.getInt(4)));
+                    ll_juegos.addView(GameView.newInstance(getContext(),datos.getString(1),"Game Time: "+datos.getString(2),datos.getString(3),datos.getInt(4)));
                 } while(datos.moveToNext());
             }
             db_juego.close();
@@ -99,7 +99,7 @@ public class games extends Fragment {
             return;
         }
         timer = new Timer();
-        timer.scheduleAtFixedRate(timerTask, 0, 1*60*1000);
+        timer.scheduleAtFixedRate(timerTask, 0, 1 * 60 * 1000);
     }
 
     public void stop() {
@@ -140,16 +140,17 @@ public class games extends Fragment {
                 super.onProgressUpdate(values);
                 int caso = (Integer)values[5];
                 if(caso==0){
-                    sesionAct= GameView.newInstance(getContext(),"Activo: "+(String)values[1],"Tiempo de juego en minutos: "+(String)values[2],(String)values[4],(Integer)values[0]);
+                    sesionAct= GameView.newInstance(getContext(),"Activo: "+(String)values[1],"Game Time: "+(String)values[2],(String)values[4],(Integer)values[0]);
                     ll_juegos.addView(sesionAct,0);
                 }else if(caso==1){
                     if(sesionAct.getSessionID()==(Integer)values[0]){
-                        sesionAct.setDuracion((String)values[2]);
+                        sesionAct.setDuracion("Game Time: "+(String)values[2]);
                     }else{
                         ll_juegos.removeViewAt(0);
                         String lbl = sesionAct.getNombre().getText().toString();
-                        ll_juegos.addView(GameView.newInstance(getContext(),lbl.replace("Activo: ",""),"Tiempo de juego en minutos: "+sesionAct.getDuracion(),sesionAct.getStrLogo(),sesionAct.getSessionID()),0);
-                        sesionAct=GameView.newInstance(getContext(),"Activo: "+(String)values[1],"Tiempo de juego en minutos: "+(String)values[2],(String)values[3],(Integer)values[0]);
+                        String lbl2 = sesionAct.getDuracion().getText().toString();
+                        ll_juegos.addView(GameView.newInstance(getContext(),lbl.replace("Activo: ",""),"Game Time: "+lbl2.replace("Game Time: ",""),sesionAct.getStrLogo(),sesionAct.getSessionID()),0);
+                        sesionAct=GameView.newInstance(getContext(),"Activo: "+(String)values[1],"Game Time: "+(String)values[2],(String)values[4],(Integer)values[0]);
                         ll_juegos.addView(sesionAct,0);
                     }
 

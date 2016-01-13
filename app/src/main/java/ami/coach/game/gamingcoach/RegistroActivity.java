@@ -129,7 +129,7 @@ public class RegistroActivity extends AppCompatActivity{
         //if(consultando!=null)consultando.dismiss();
         Intent intent = new Intent(activity, MainActivity.class);
         startActivity(intent);
-        llenarSesiones();
+        //llenarSesiones();
         activity.finish();
     }
 
