@@ -11,6 +11,7 @@ import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -185,7 +186,7 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
         else if (id==R.id.mostrar_alerta){
-            notificacion();
+            notificacion(0);
         }
 
         return super.onOptionsItemSelected(item);
@@ -232,12 +233,13 @@ public class MainActivity extends AppCompatActivity {
             return null;
         }
     }
-
-    public void notificacion(){
+    public void notificacion(float tiempo){
         int iUniqueId = (int) (System.currentTimeMillis() & 0xfffffff);
 
-        String title="aaaaaaaaa";
-        String content="sssssssss";
+        //tiempo=0;
+        String title="Mucho tiempo de Juego";
+        CharSequence content="Ud ha llevado jugando durante "+tiempo+" minutos. \n" +
+                "Por su salud considere tomar un tiempo de descanso.";
 
 
         Intent intent = new Intent(mainActivity,MainActivity.class);
@@ -247,19 +249,30 @@ public class MainActivity extends AppCompatActivity {
         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
         PendingIntent pIntent = PendingIntent.getActivity(mainActivity, iUniqueId, intent, 0);
-        Notification noti = new Notification.Builder(mainActivity)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(mainActivity)
                 .setTicker("Gaming Coach Notification")
-                .setContentTitle("Gaming Coach - "+title)
+                .setContentTitle("Gaming Coach - " + title)
                 .setContentText(content)
                 .setSmallIcon(R.mipmap.ic_launcher)
                 .setContentIntent(pIntent)
-                .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000 })
+                .setStyle(new NotificationCompat.BigTextStyle()
+                        .bigText(content))
+                .setVibrate(new long[]{1000, 1000, 1000, 1000, 1000})
                 .setLights(Color.RED, 3000, 3000)
-                .setSound(Uri.parse("uri://sadfasdfasdf.mp3"))
-                .getNotification();
+                .addAction (R.color.online,
+                        getString(R.string.cerrar_sesion), pIntent)
+                .addAction (R.drawable.bg_profile,
+                        getString(R.string.steam_id), pIntent);
+        //.setSound(Uri.parse("uri://sadfasdfasdf.mp3"))
+
+        Notification noti = builder.getNotification();
+
+
         noti.flags=Notification.FLAG_AUTO_CANCEL;
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) mainActivity.getSystemService(mainActivity.NOTIFICATION_SERVICE);
         notificationManager.notify(0, noti);
     }
+
+
 
 }

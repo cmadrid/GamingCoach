@@ -32,7 +32,7 @@ public class RegistroActivity extends AppCompatActivity{
     private String customUrl=null;
 
     public static enum Prefs {
-        UserLog,SteamId64,SteamId,CustomUrl,OnlineState,StateMessage,Avatar,updated
+        UserLog,SteamId64,SteamId,CustomUrl,OnlineState,StateMessage,Avatar,updated,TimeNoGame,TimeInGame
     }
     @Override
     protected void onResume() {
@@ -129,7 +129,7 @@ public class RegistroActivity extends AppCompatActivity{
         //if(consultando!=null)consultando.dismiss();
         Intent intent = new Intent(activity, MainActivity.class);
         startActivity(intent);
-        //llenarSesiones();
+        llenarSesiones();
         activity.finish();
     }
 

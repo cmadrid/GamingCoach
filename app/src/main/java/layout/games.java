@@ -103,7 +103,8 @@ public class games extends Fragment {
     }
 
     public void stop() {
-        timer.cancel();
+        if(timer!=null)
+            timer.cancel();
         timer = null;
     }
 

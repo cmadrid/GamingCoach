@@ -83,8 +83,8 @@ public class Chart extends Fragment {
             d1.setLineWidth(2.5f);
             d1.setCircleSize(4.5f);
             d1.setHighLightColor(Color.rgb(244, 117, 117));
-            d1.setColor(ColorTemplate.VORDIPLOM_COLORS[i]);
-            d1.setCircleColor(ColorTemplate.VORDIPLOM_COLORS[i]);
+            d1.setColor(ColorTemplate.COLORFUL_COLORS[i]);
+            d1.setCircleColor(ColorTemplate.COLORFUL_COLORS[i]);
             d1.setDrawValues(false);
             sets.add(d1);
             i++;
