@@ -18,7 +18,8 @@ import java.util.Calendar;
 import ami.coach.game.gamingcoach.database.DBSesiones;
 
 /**
- * Created by ces_m on 12/22/2015.
+ * Created by César Madrid
+ * on 12/22/2015.
  */
 public class RegistroActivity extends AppCompatActivity{
 
@@ -27,29 +28,28 @@ public class RegistroActivity extends AppCompatActivity{
     Context ctx;
     RegistroActivity activity;
     ProgressDialog consultando;
-    public static final String MyPREFERENCES = "logPreferences" ;
-    private SharedPreferences sharedpreferences;
+    //private SharedPreferences sharedpreferences;
     private String customUrl=null;
-
+/*
+    public static final String MyPREFERENCES = "logPreferences" ;
     public static enum Prefs {
         UserLog,SteamId64,SteamId,CustomUrl,OnlineState,StateMessage,Avatar,updated,TimeNoGame,TimeInGame
-    }
+    }*/
     @Override
     protected void onResume() {
         super.onResume();
 
-        sharedpreferences=getSharedPreferences(MyPREFERENCES,Context.MODE_PRIVATE);
+        SharedPreferences sharedpreferences=getSharedPreferences(GamingCoach.Pref.MyPREFERENCES,Context.MODE_PRIVATE);
 
-        if (sharedpreferences.contains(Prefs.UserLog.name()))
+        if (sharedpreferences.contains(GamingCoach.Pref.UserLog))
         {
-            sharedpreferences=getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
             Intent intent = new Intent(this,MainActivity.class);
             startActivity(intent);
             this.finish();
 
         }
-        else if(sharedpreferences.contains(Prefs.CustomUrl.name())){
-            customUrl=sharedpreferences.getString(Prefs.CustomUrl.name(), null);
+        else if(sharedpreferences.contains(GamingCoach.Pref.CustomUrl)){
+            customUrl=sharedpreferences.getString(GamingCoach.Pref.CustomUrl, null);
             id.setText(customUrl);
         }
     }
@@ -137,12 +137,13 @@ public class RegistroActivity extends AppCompatActivity{
         //id juegos
         String id1="314000";
         String id2="356330";
+        /*
         String id3="381990";
         String id4="397040";
         String id5="420880";
         String id6="422630";
         String id7="423880";
-
+*/
         Calendar calendar = Calendar.getInstance();
         //calendar.add(Calendar.DAY_OF_MONTH, -5);
         DBSesiones dbSesiones=new DBSesiones(ctx);

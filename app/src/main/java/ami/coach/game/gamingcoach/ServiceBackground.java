@@ -13,7 +13,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * Created by ces_m on 12/6/2015.
+ * Created by César Madrid
+ * on 12/6/2015.
  */
 public class ServiceBackground extends Service {
     public static final String MyPREFERENCES = "logPreferences" ;
@@ -28,7 +29,7 @@ public class ServiceBackground extends Service {
     @Override
     public int onStartCommand(Intent intent,int flags,int startId){
         sharedpreferences=getSharedPreferences(MyPREFERENCES, Context.MODE_PRIVATE);
-        customUrl = sharedpreferences.getString(RegistroActivity.Prefs.CustomUrl.name(), "");
+        customUrl = sharedpreferences.getString(GamingCoach.Pref.CustomUrl, "");
         start();
         Toast.makeText(this,"Gaming Coach ON!!!",Toast.LENGTH_SHORT).show();
         return START_STICKY;//averiguar bien
@@ -62,7 +63,8 @@ public class ServiceBackground extends Service {
     }
 
     public void stop() {
-        timer.cancel();
+        if(timer!=null)
+            timer.cancel();
         timer = null;
     }
 

@@ -11,15 +11,15 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.SocketTimeoutException;
 import java.net.URL;
-import java.util.ArrayList;
+import java.net.URLConnection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -30,11 +30,12 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import ami.coach.game.gamingcoach.database.DBJuego;
 
 /**
- * Created by Joseph_Gallardo on 29/12/2015.
+ * Created by Joseph_Gallardo
+ * on 29/12/2015.
  */
 public class GetJuegosXml extends AsyncTask<String,Void,Object[]> {
 
-    HashMap<String,Juego> listaJuegos = new HashMap<String,Juego>();
+    HashMap<String,Juego> listaJuegos = new HashMap<>();
     Context activity;
     SharedPreferences sharedPreferences;
 
@@ -64,29 +65,29 @@ public class GetJuegosXml extends AsyncTask<String,Void,Object[]> {
             Document doc = builder.parse(resp1.getEntity().getContent());
 
             NodeList list = doc.getElementsByTagName("game");
-            //System.out.println(list.getLength());
-            //System.out.println(list.item(0).getTextContent());
+
 
             for (int i = 0; i < list.getLength(); i++) {
-                //Node currentNode = list.item(i);
+
                 Element currentGame = (Element)list.item(i);
                 Juego juego = new Juego();
                 juego.setID_juego(currentGame.getElementsByTagName("appID").item(0).getTextContent());
                 juego.setNombre_juego(currentGame.getElementsByTagName("name").item(0).getTextContent());
 
-                String ruta=null;
-                try {
+                File path = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/GamingCoach/logos");
+                File mediaFile = new File(path,juego.getID_juego()+".jpg");
+                String ruta=mediaFile.getAbsolutePath();
+                if(!mediaFile.exists()){
 
+                    if(!path.mkdirs())
+                        throw new Exception("Error creando ruta");
 
-                    File path = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/GamingCoach/logos");
-                    File mediaFile = new File(path,juego.getID_juego()+".jpg");
-                    if(!mediaFile.exists()){
-
-                        path.mkdirs();
-
-                        URL url = new URL(currentGame.getElementsByTagName("logo").item(0).getTextContent());
-                        //URL url = new URL("https://www.google.com.ec/logos/doodles/2015/holidays-2015-day-1-6575248619077632-hp.jpg");
-                        InputStream input = url.openConnection().getInputStream();
+                    URL url = new URL(currentGame.getElementsByTagName("logo").item(0).getTextContent());
+                    URLConnection urlConnection = url.openConnection();
+                    urlConnection.setConnectTimeout(1000);
+                    urlConnection.setReadTimeout(1000);
+                    try {
+                        InputStream input = urlConnection.getInputStream();
 
                         OutputStream os = new FileOutputStream(mediaFile);
                         byte data[] = new byte[4096];
@@ -95,18 +96,13 @@ public class GetJuegosXml extends AsyncTask<String,Void,Object[]> {
                             os.write(data, 0, count);
                         }
 
-                        if (os != null)
-                            os.close();
-                        if (input != null)
-                            input.close();
+                        os.close();
+                        input.close();
+
+                    }catch (SocketTimeoutException e){
+                        ruta = null;
                     }
-
-                    ruta=mediaFile.getAbsoluteFile().toString();
-
-                }catch (Exception e){
-                    System.out.println("error: "+e.getMessage());
                 }
-
                 juego.setLogo_juego(ruta);
                 listaJuegos.put(juego.getID_juego(),juego);
             }
@@ -114,7 +110,7 @@ public class GetJuegosXml extends AsyncTask<String,Void,Object[]> {
             doc = builder.parse(resp2.getEntity().getContent());
             list = doc.getElementsByTagName("message");
             String id;
-            int minutos=0;
+            int minutos;
             for (int i = 0; i < list.getLength(); i++){
                 Element currentGame = (Element)list.item(i);
                 id = currentGame.getElementsByTagName("appid").item(0).getTextContent();
@@ -124,7 +120,6 @@ public class GetJuegosXml extends AsyncTask<String,Void,Object[]> {
         }
         catch (Exception e) {
             System.out.println(e.getMessage());
-
         }
 
         return new Object[0];
@@ -139,7 +134,6 @@ public class GetJuegosXml extends AsyncTask<String,Void,Object[]> {
             Juego juego = (Juego)pair.getValue();
 
             db_juego.insertaroActualizar(juego.getID_juego(), juego.getNombre_juego(), juego.getLogo_juego(), juego.getMinTotal());
-            //System.out.println(pair.getValue());
 
         }
         db_juego.close();

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class DBJuego {
@@ -41,10 +40,11 @@ public class DBJuego {
 
         return valores;
     }
+    /*
     public void insertar(String id,String nombre,String logo,int minutos){
         //insert  into contactos
         db.insert(NOMBRE_TABLA, null, generarContentValues(id, nombre, logo, minutos));
-    }
+    }*/
     public void insertaroActualizar(String id,String nombre,String logo,int minutos){
 
         Cursor c = consultar(id);
@@ -52,15 +52,12 @@ public class DBJuego {
             String[] args = new String[] {id};
             int minutos_antes = consultarMinutos(id);
             if(minutos_antes!=minutos) {
-               // System.out.println("minutos no coinciden!!!: " + minutos_antes + " - " + minutos);
-
                 DBSesiones dbSesiones=new DBSesiones(ctx);
-                dbSesiones.insertaroActualizar(id,(minutos-minutos_antes)+"",new Date());
+                dbSesiones.insertaroActualizar(id, (minutos - minutos_antes) + "", new Date());
                 dbSesiones.close();
 
-                db.update(NOMBRE_TABLA, generarContentValues(id, nombre, logo, minutos), ID + "=?", args);
             }
-           // else System.out.println("coincide");
+            db.update(NOMBRE_TABLA, generarContentValues(id, nombre, logo, minutos), ID + "=?", args);
 
         }else
             db.insert(NOMBRE_TABLA,null,generarContentValues(id,nombre,logo,minutos));
@@ -73,12 +70,12 @@ public class DBJuego {
         Cursor c = db.query(NOMBRE_TABLA, campos, ID+"=?", args, null, null, null);
         if(c.moveToFirst())
             minutos=c.getInt(0);
+        c.close();
         return minutos;
     }
 
 
     public Cursor consultar(String id){
-        //insert  into contactos
 
         String[] campos = new String[] {ID, NOMBRE , MINUTOS,LOGO};
         //Cursor c = db.query(NOMBRE_TABLA, campos, "usuario=?(where)", args(para el where), group by, having, order by, num);

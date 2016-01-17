@@ -1,7 +1,8 @@
 package ami.coach.game.gamingcoach;
 
 /**
- * Created by Joseph_Gallardo on 29/12/2015.
+ * Created by Joseph_Gallardo
+ * on 29/12/2015.
  */
 public class Juego {
     private String ID_juego;
@@ -11,14 +12,14 @@ public class Juego {
 
     public Juego() {
     }
-
+/*
     public Juego(String ID_juego, String nombre_juego, String logo_juego, int minTotal) {
         this.ID_juego = ID_juego;
         this.nombre_juego = nombre_juego;
         this.logo_juego = logo_juego;
         this.minTotal = minTotal;
     }
-
+*/
     public String getID_juego() {
         return ID_juego;
     }

@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class DBSesiones {
     public static final String NOMBRE_TABLA = "sesiones";
@@ -35,7 +36,7 @@ public class DBSesiones {
         db = helper.getWritableDatabase();
     }
     public ContentValues generarContentValues(String juego,String minutos,Date inicio){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm", Locale.US);
         ContentValues valores = new ContentValues();
         if(juego!=null)
             valores.put(JUEGO,juego);
@@ -79,7 +80,7 @@ public class DBSesiones {
             return db.query(QB, campos, JUEGO + "=? and datetime('now','-5 hours','-45 minutes')<" + ACTUAIZACION, args, null, null, ACTUAIZACION+" desc");
 
     }
-    public Cursor consultar(String id){
+    public Cursor consultar(String juego){
         //insert  into contactos
 
         String QB= NOMBRE_TABLA +
@@ -90,17 +91,17 @@ public class DBSesiones {
         String[] campos = new String[] {JUEGO, DBJuego.NOMBRE , MINUTOS, DBJuego.LOGO,ID};
         //Cursor c = db.query(NOMBRE_TABLA, campos, "usuario=?(where)", args(para el where), group by, having, order by, num);
 
-        String[] args = new String[] {id};
+        String[] args = new String[] {juego};
 
         String orderBy = ACTUAIZACION+" desc";
-        if(id==null)return db.query(QB, campos, null, null, null, null,orderBy);
-        return db.query(QB, campos, ID+"=?", args, null, null, orderBy);
+        if(juego==null)return db.query(QB, campos, null, null, null, null,orderBy);
+        return db.query(QB, campos, JUEGO+"=?", args, null, null, orderBy);
     }
 
 
 
     public Cursor consultarSemana(Date desde){
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd 00:00");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd 00:00",Locale.US);
 
         String QB= NOMBRE_TABLA +
                 " JOIN " + TABLE_FK + " ON " + JUEGO + " = "+FK_ID;

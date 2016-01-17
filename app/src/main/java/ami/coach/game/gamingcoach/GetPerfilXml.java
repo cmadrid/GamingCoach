@@ -9,15 +9,21 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.SystemClock;
 import android.support.v4.app.NotificationCompat;
 
 import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
+//import org.apache.http.StatusLine;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -26,15 +32,20 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.net.SocketTimeoutException;
 import java.net.URL;
+import java.net.URLConnection;
+import java.net.UnknownHostException;
 import java.util.Date;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
 /**
- * Created by ces_m on 1/4/2016.
+ * Created by César Madrid
+ * on 1/4/2016.
  */
+@SuppressWarnings("deprecation")
 public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
 
     String customUrl;
@@ -57,13 +68,24 @@ public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
             System.out.println(usuario);
             HttpGet uri = new HttpGet("http://steamcommunity.com/id/"+usuario+"?xml=1&token="+token);
 
-            DefaultHttpClient client = new DefaultHttpClient();
+            /*Se defina el tiempo de espera maxima para la conexion y obtener el perfil del usuario*/
+            HttpParams httpParams = new BasicHttpParams();
+            HttpConnectionParams.setConnectionTimeout(httpParams, 5*1000);
+            HttpConnectionParams.setSoTimeout(httpParams, 10*1000);
+            /***************************************************************************************/
+
+            DefaultHttpClient client = new DefaultHttpClient(httpParams);
             HttpResponse resp = client.execute(uri);
 
+            /*
             StatusLine status = resp.getStatusLine();
+
             if (status.getStatusCode() != 200) {
                 //Log.d(tag, "HTTP error, invalid server status code: " + resp.getStatusLine());
-            }
+                //realizar validacion en el logueo.
+                //mostrar alerta
+                //return;
+            }*/
 
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
@@ -72,6 +94,12 @@ public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
 
             NodeList list = doc.getElementsByTagName("steamID");
             Node node = list.item(0);
+            if(node==null){
+                result[0]="Error";
+                result[1]="Error de logueo";
+                result[2]="Usuario "+usuario+" no encontrado.";
+                return result;
+            }
             result[0]=node.getTextContent();
 
             list = doc.getElementsByTagName("onlineState");
@@ -90,33 +118,43 @@ public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
 
             File path = new File(Environment.getExternalStorageDirectory().getAbsolutePath() + "/GamingCoach/avatars");
             File mediaFile = new File(path, customUrl+".jpg");
+            String ruta=mediaFile.getAbsolutePath();
             if(!mediaFile.exists()){
 
-                path.mkdirs();
+                if(!path.mkdirs())
+                    throw new Exception("Error creando ruta");
 
                 URL url = new URL(node.getTextContent());
                 //URL url = new URL("https://www.google.com.ec/logos/doodles/2015/holidays-2015-day-1-6575248619077632-hp.jpg");
-                InputStream input = url.openConnection().getInputStream();
+                URLConnection urlConnection = url.openConnection();
+                urlConnection.setConnectTimeout(1000);
+                urlConnection.setReadTimeout(1000);
+                try {
+                    InputStream input = urlConnection.getInputStream();
 
-                OutputStream os = new FileOutputStream(mediaFile);
-                byte data[] = new byte[4096];
-                int count;
-                while ((count = input.read(data)) != -1) {
-                    os.write(data, 0, count);
-                }
+                    OutputStream os = new FileOutputStream(mediaFile);
+                    byte data[] = new byte[4096];
+                    int count;
+                    while ((count = input.read(data)) != -1) {
+                        os.write(data, 0, count);
+                    }
 
-                if (os != null)
                     os.close();
-                if (input != null)
                     input.close();
+
+                    System.out.println("archivo: " + mediaFile.getAbsoluteFile());
+                }catch (SocketTimeoutException e){
+                    System.out.println("Error descargando la imagen: "+e.getMessage());
+                    System.out.println("archivo: " + null);
+                    ruta = null;
+                }
 
             }
 
 
 
-            result[3]=mediaFile.getAbsoluteFile();
-            System.out.println("archivo: " + mediaFile.getAbsoluteFile());
 
+            result[3]=ruta;
 
 
             System.out.println("steamID64");
@@ -128,10 +166,21 @@ public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
             System.out.println(new Date());
 
 
-        }catch (Exception e){
+        }catch (UnknownHostException e){
+            result[0]="Error";
+            result[1]="No se pudo establecer conexion";
+            result[2]="Existen problemas con el servidor, pruebe en un momento.";
+        }catch(ConnectTimeoutException e){
+            result[0]="Error";
+            result[1]="El tiempo de conexion ha expirado";
+            result[2]="Se ha sobrepasado el tiempo de espera, vuelva a intentar en un momento.";
+        }
+        catch (Exception e){
             System.out.println("error: "+e.getMessage());
-
-            result=null;
+            System.out.println("error: "+e.getClass());
+            result[0]="Error";
+            result[1]="Error en inicio.";
+            result[2]="Ha surgido un error: "+e.getMessage();
         }
 
         publishProgress();
@@ -147,24 +196,26 @@ public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
 
     @Override
     protected void onPostExecute(Object[] result) {
+        if(result[0].equals("Error") ){
+            String titulo=result[1]+"";
+            String mensaje=result[2]+"";
+            if(!isOnline()){
+                titulo="No se pudo establecer conexion";
+                mensaje="Revise su conexion a internet.";
+            }
 
+            if(ctx.getClass()==RegistroActivity.class) {
+                RegistroActivity reg = (RegistroActivity) ctx;
+                if (reg.consultando != null) reg.consultando.dismiss();
+            }
+            generaDialogo(titulo,mensaje);
+            //result=null;
+            return;
+        }
+/*
         if(result==null && ctx!=null){
 
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ctx);
-            alertDialogBuilder.setTitle("No se encontro Usuario");
-
-            alertDialogBuilder
-                    .setMessage("No se encontro un usuario con ese id.")
-                    .setIcon(android.R.drawable.stat_notify_error)
-                    .setCancelable(false)
-                    .setNegativeButton("OK", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int id) {
-                            dialog.cancel();
-                        }
-                    });
-            AlertDialog alertDialog = alertDialogBuilder.create();
-            alertDialog.show();
-
+            generaDialogo("No se encontro Usuario","No se encontro un usuario con ese id.");
 
             if(ctx.getClass()==RegistroActivity.class) {
                 RegistroActivity reg = (RegistroActivity) ctx;
@@ -172,54 +223,56 @@ public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
             }
             return;
         }
-
+*/
         Date date = new Date(System.currentTimeMillis());
         long millis = date.getTime();
 
         SharedPreferences.Editor editor = sharedpreferences.edit();
         if(ctx.getClass()==RegistroActivity.class) {
-            editor.putString(RegistroActivity.Prefs.SteamId64.name(), result[5].toString());
-            editor.putString(RegistroActivity.Prefs.SteamId.name(), result[0].toString());
-            editor.putString(RegistroActivity.Prefs.Avatar.name(), result[3].toString());
-            editor.putString(RegistroActivity.Prefs.CustomUrl.name(), customUrl);
-            editor.putBoolean(RegistroActivity.Prefs.UserLog.name(), true);
-            editor.putFloat(RegistroActivity.Prefs.TimeNoGame.name(), 0);
-            editor.putFloat(RegistroActivity.Prefs.TimeInGame.name(),0);
+            editor.putString(GamingCoach.Pref.SteamId64, result[5].toString());
+            editor.putString(GamingCoach.Pref.SteamId, result[0].toString());
+            editor.putString(GamingCoach.Pref.CustomUrl, customUrl);
+            editor.putBoolean(GamingCoach.Pref.UserLog, true);
+            editor.putFloat(GamingCoach.Pref.TimeNoGame, 0);
+            editor.putFloat(GamingCoach.Pref.TimeInGame,0);
         }
         /* Implementacion para Controlar las horas de juego*/
         if(result[1].toString().equalsIgnoreCase("in-game")){
-            Float timeOnline = sharedpreferences.getFloat(RegistroActivity.Prefs.TimeInGame.name(),0);
+            Float timeOnline = sharedpreferences.getFloat(GamingCoach.Pref.TimeInGame,0);
             timeOnline +=(float)0.5;//se puede ser mas exacto comparando la hora de actualizacion anterior con la actual.
-            editor.putFloat(RegistroActivity.Prefs.TimeInGame.name(),timeOnline);
-            editor.putFloat(RegistroActivity.Prefs.TimeNoGame.name(), 0);
+            editor.putFloat(GamingCoach.Pref.TimeInGame,timeOnline);
+            editor.putFloat(GamingCoach.Pref.TimeNoGame, 0);
             System.out.println("tiempo en juego");
             System.out.println(timeOnline);
             if(timeOnline==5)
                 notificacion(timeOnline);
         }
-        else if(sharedpreferences.getFloat(RegistroActivity.Prefs.TimeInGame.name(),0)!=0){
-            Float timeNoGame = sharedpreferences.getFloat(RegistroActivity.Prefs.TimeNoGame.name(),0);
+        else if(sharedpreferences.getFloat(GamingCoach.Pref.TimeInGame,0)!=0){
+            Float timeNoGame = sharedpreferences.getFloat(GamingCoach.Pref.TimeNoGame,0);
             timeNoGame += (float)0.5;
             if(timeNoGame >5)
             {
-                editor.putFloat(RegistroActivity.Prefs.TimeNoGame.name(), 0);
-                editor.putFloat(RegistroActivity.Prefs.TimeInGame.name(),0);
+                editor.putFloat(GamingCoach.Pref.TimeNoGame, 0);
+                editor.putFloat(GamingCoach.Pref.TimeInGame,0);
             }
             else
-                editor.putFloat(RegistroActivity.Prefs.TimeNoGame.name(), timeNoGame);
+                editor.putFloat(GamingCoach.Pref.TimeNoGame, timeNoGame);
             System.out.println("tiempo sin juego");
             System.out.println(timeNoGame);
 
         }
         /* Fin Implementacion para Controlar las horas de juego*/
 
-        editor.putString(RegistroActivity.Prefs.OnlineState.name(), result[1].toString());
-        editor.putString(RegistroActivity.Prefs.StateMessage.name(), result[2].toString().replace("<br/>",": "));
-        editor.putLong(RegistroActivity.Prefs.updated.name(), millis);
-        editor.commit();
+        editor.putString(GamingCoach.Pref.OnlineState, result[1].toString());
+        editor.putString(GamingCoach.Pref.Avatar, (String)result[3]);
+        editor.putString(GamingCoach.Pref.StateMessage, result[2].toString().replace("<br/>",": "));
+        editor.putLong(GamingCoach.Pref.updated, millis);
+        //editor.commit();
+        editor.apply();
 
         if(MainActivity.mainActivity!=null)
             MainActivity.mainActivity.setInfo();
+
         GetJuegosXml getJuegosXml = new GetJuegosXml(ctx,sharedpreferences);
         if(ctx.getClass()==RegistroActivity.class) {
             RegistroActivity reg = (RegistroActivity) ctx;
@@ -271,7 +324,34 @@ public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
 
 
         noti.flags=Notification.FLAG_AUTO_CANCEL;
-        NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(ctx.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(0, noti);
+    }
+
+    public void generaDialogo(String titulo,String mensaje){
+
+        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ctx);
+        alertDialogBuilder.setTitle(titulo);
+
+        alertDialogBuilder
+                .setMessage(mensaje)
+                .setIcon(android.R.drawable.stat_notify_error)
+                .setCancelable(false)
+                .setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alertDialog = alertDialogBuilder.create();
+        alertDialog.show();
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) ctx.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+
+        return netInfo != null && netInfo.isConnectedOrConnecting();
+
     }
 }

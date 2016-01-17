@@ -8,6 +8,7 @@ import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -22,12 +23,13 @@ import ami.coach.game.gamingcoach.R;
 
 public class PieChartItem extends ChartItem {
 
-    private Typeface mTf;
+    private Typeface mTf=null;
     private SpannableString mCenterText;
+    ViewGroup vg;
 
-    public PieChartItem(ChartData<?> cd, Context c) {
+    public PieChartItem(ChartData<?> cd, ViewGroup vg) {
         super(cd);
-
+        this.vg = vg;
         //mTf = Typeface.createFromAsset(c.getAssets(), "OpenSans-Regular.ttf");
         mCenterText = generateCenterText();
     }
@@ -40,13 +42,13 @@ public class PieChartItem extends ChartItem {
     @Override
     public View getView(int position, View convertView, Context c) {
 
-        ViewHolder holder = null;
+        ViewHolder holder;
 
         if (convertView == null) {
 
             holder = new ViewHolder();
 
-            convertView = LayoutInflater.from(c).inflate(R.layout.list_item_piechart, null);
+            convertView = LayoutInflater.from(c).inflate(R.layout.list_item_piechart, vg,false);
             holder.chart = (PieChart) convertView.findViewById(R.id.chart);
 
             convertView.setTag(holder);

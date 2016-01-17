@@ -29,6 +29,7 @@ import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Locale;
 
 import ami.coach.game.gamingcoach.database.DBJuego;
 import ami.coach.game.gamingcoach.database.DBSesiones;
@@ -46,14 +47,13 @@ public class MainActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     public static MainActivity mainActivity=null;
-    private SectionsPagerAdapter mSectionsPagerAdapter;
     games actividades = games.newInstance();
     Chart estadisticas = Chart.newInstance();
 
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    private ViewPager mViewPager;
+
     static Intent intent;
     static String steamId64;
     static String steamId;
@@ -69,20 +69,20 @@ public class MainActivity extends AppCompatActivity {
         mainActivity=this;
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_2);
-        this.intent = getIntent();
+        MainActivity.intent = getIntent();
 
-        sharedpreferences = getSharedPreferences(RegistroActivity.MyPREFERENCES, Context.MODE_PRIVATE);
-        steamId64 = sharedpreferences.getString(RegistroActivity.Prefs.SteamId64.name(), "");
-        steamId = sharedpreferences.getString(RegistroActivity.Prefs.SteamId.name(), "");
+        sharedpreferences = getSharedPreferences(GamingCoach.Pref.MyPREFERENCES, Context.MODE_PRIVATE);
+        steamId64 = sharedpreferences.getString(GamingCoach.Pref.SteamId64, "");
+        steamId = sharedpreferences.getString(GamingCoach.Pref.SteamId, "");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
+        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
@@ -113,20 +113,24 @@ public class MainActivity extends AppCompatActivity {
 
     public void setInfo(){
 
-        String estado_str = sharedpreferences.getString(RegistroActivity.Prefs.StateMessage.name(), "");
-        String id = sharedpreferences.getString(RegistroActivity.Prefs.SteamId.name(), "");
-        String estadoEnlinea = sharedpreferences.getString(RegistroActivity.Prefs.OnlineState.name(), "");
+        String estado_str = sharedpreferences.getString(GamingCoach.Pref.StateMessage, "");
+        String id = sharedpreferences.getString(GamingCoach.Pref.SteamId, "");
+        String estadoEnlinea = sharedpreferences.getString(GamingCoach.Pref.OnlineState, "");
         steam_id.setText(id);
         estado.setText(estadoEnlinea);
         mensaje_estado.setText(estado_str);
-        imagen_perfil.setImageURI(Uri.parse(sharedpreferences.getString(RegistroActivity.Prefs.Avatar.name(), null)));
+        String logo = sharedpreferences.getString(GamingCoach.Pref.Avatar, null);
+        if(logo==null)
+            imagen_perfil.setImageResource(R.drawable.no_avatar);
+        else
+            imagen_perfil.setImageURI(Uri.parse(logo));
 
-        Long millis = sharedpreferences.getLong(RegistroActivity.Prefs.updated.name(), 0);
+        Long millis = sharedpreferences.getLong(GamingCoach.Pref.updated, 0);
         Calendar calendar = Calendar.getInstance();
         calendar.setTimeInMillis(millis);
-        String newstring = new SimpleDateFormat("dd/MM/yyy HH:mm").format(calendar.getTime());
-
-        actualizado.setText("Actualizado el: " + newstring);
+        String newstring = new SimpleDateFormat("dd/MM/yyy HH:mm", Locale.US).format(calendar.getTime());
+        String actualizado_str="Actualizado el: " + newstring;
+        actualizado.setText(actualizado_str);
 
         if(estadoEnlinea.equalsIgnoreCase("offline"))
             estado.setTextColor(Color.RED);
@@ -163,11 +167,12 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.cerrar_sesion) {
-            SharedPreferences sharedpreferences = getSharedPreferences(RegistroActivity.MyPREFERENCES, Context.MODE_PRIVATE);
+            SharedPreferences sharedpreferences = getSharedPreferences(GamingCoach.Pref.MyPREFERENCES, Context.MODE_PRIVATE);
             SharedPreferences.Editor editor = sharedpreferences.edit();
             editor.clear();
-            editor.putString(RegistroActivity.Prefs.CustomUrl.name(), sharedpreferences.getString(RegistroActivity.Prefs.CustomUrl.name(), null));
-            editor.commit();
+            editor.putString(GamingCoach.Pref.CustomUrl, sharedpreferences.getString(GamingCoach.Pref.CustomUrl, null));
+            editor.apply();
+            //editor.commit();
 
             Intent intent = new Intent(this,RegistroActivity.class);
             startActivity(intent);
@@ -265,11 +270,11 @@ public class MainActivity extends AppCompatActivity {
                         getString(R.string.steam_id), pIntent);
         //.setSound(Uri.parse("uri://sadfasdfasdf.mp3"))
 
-        Notification noti = builder.getNotification();
+        Notification noti = builder.build();
 
 
         noti.flags=Notification.FLAG_AUTO_CANCEL;
-        NotificationManager notificationManager = (NotificationManager) mainActivity.getSystemService(mainActivity.NOTIFICATION_SERVICE);
+        NotificationManager notificationManager = (NotificationManager) mainActivity.getSystemService(MainActivity.NOTIFICATION_SERVICE);
         notificationManager.notify(0, noti);
     }
 

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.XAxis;
@@ -17,11 +18,12 @@ import ami.coach.game.gamingcoach.R;
 
 public class LineChartItem extends ChartItem {
 
-    private Typeface mTf;
+    private Typeface mTf=null;
+    ViewGroup vg;
 
-    public LineChartItem(ChartData<?> cd, Context c) {
+    public LineChartItem(ChartData<?> cd,ViewGroup vg) {
         super(cd);
-
+        this.vg = vg;
         //mTf = Typeface.createFromAsset(c.getAssets(), "OpenSans-Regular.ttf");
     }
 
@@ -33,13 +35,13 @@ public class LineChartItem extends ChartItem {
     @Override
     public View getView(int position, View convertView, Context c) {
 
-        ViewHolder holder = null;
+        ViewHolder holder;
 
         if (convertView == null) {
 
             holder = new ViewHolder();
 
-            convertView = LayoutInflater.from(c).inflate(R.layout.list_item_linechart, null);
+            convertView = LayoutInflater.from(c).inflate(R.layout.list_item_linechart,vg,false);
 
             holder.chart = (LineChart) convertView.findViewById(R.id.chart);
 
