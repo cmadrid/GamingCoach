@@ -9,7 +9,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import layout.Chart;
-import layout.games;
+import layout.gamess;
 
 public class InfoGame extends AppCompatActivity {
 
@@ -23,7 +23,7 @@ public class InfoGame extends AppCompatActivity {
      */
     //private SectionsPagerAdapter mSectionsPagerAdapter;
 
-    games actividades;
+    gamess actividades;
     Chart estadisticas;
     String juego;
     /**
@@ -37,7 +37,7 @@ public class InfoGame extends AppCompatActivity {
         setContentView(R.layout.activity_info_game);
 
         this.juego=getIntent().getExtras().getString("id");
-        actividades = games.newInstance(juego);
+        actividades = gamess.newInstance(juego);
         estadisticas = Chart.newInstance();
 
         // Create the adapter that will return a fragment for each of the three
