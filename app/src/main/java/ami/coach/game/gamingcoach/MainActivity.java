@@ -34,7 +34,7 @@ import java.util.Locale;
 import ami.coach.game.gamingcoach.database.DBJuego;
 import ami.coach.game.gamingcoach.database.DBSesiones;
 import layout.Chart;
-import layout.gamess;
+import layout.Games;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,7 +47,7 @@ public class MainActivity extends AppCompatActivity {
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
     public static MainActivity mainActivity=null;
-    gamess actividades = gamess.newInstance();
+    Games actividades = Games.newInstance();
     Chart estadisticas = Chart.newInstance();
 
     /**

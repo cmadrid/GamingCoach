@@ -19,24 +19,24 @@ import ami.coach.game.gamingcoach.R;
 import ami.coach.game.gamingcoach.database.DBSesiones;
 import ami.coach.game.gamingcoach.views.GameView;
 
-public class gamess extends Fragment {
+public class Games extends Fragment {
 
     private LinearLayout ll_juegos;
     private GameView sesionAct=null;
     String id=null;
-    public static gamess newInstance() {
-        return new gamess();
+    public static Games newInstance() {
+        return new Games();
 
     }
 
 
-    public static gamess newInstance(String id) {
-        gamess fragment = new gamess();
+    public static Games newInstance(String id) {
+        Games fragment = new Games();
         fragment.id=id;
         return fragment;
     }
 
-    public gamess() {
+    public Games() {
     }
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
