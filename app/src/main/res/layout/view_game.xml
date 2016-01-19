@@ -38,6 +38,15 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="Medium Text"
                 android:id="@+id/duracion" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Medium Text"
+                android:id="@+id/inicio"
+                android:gravity="bottom"
+                android:layout_gravity="right" />
         </LinearLayout>
     </LinearLayout>
 

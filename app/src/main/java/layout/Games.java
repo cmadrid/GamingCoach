@@ -60,9 +60,9 @@ public class Games extends Fragment {
             if (datos.moveToFirst()) {
                 do {
                     if(id==null)
-                        ll_juegos.addView(GameView.newInstance(getContext(), datos.getString(1), "Game Time: " + datos.getString(2), datos.getString(3),datos.getInt(4), datos.getInt(0)));
+                        ll_juegos.addView(GameView.newInstance(getContext(), datos.getString(1), "Game Time: " + datos.getString(2), datos.getString(3),datos.getInt(4), datos.getInt(0),datos.getString(5)));
                     else
-                        ll_juegos.addView(GameView.newInstancePop(getContext(), datos.getString(1), "Game Time: " + datos.getString(2), datos.getString(3), datos.getInt(4), datos.getInt(0)));
+                        ll_juegos.addView(GameView.newInstancePop(getContext(), datos.getString(1), "Game Time: " + datos.getString(2), datos.getString(3), datos.getInt(4), datos.getInt(0),datos.getString(5)));
                 } while (datos.moveToNext());
             }
 
@@ -90,6 +90,7 @@ public class Games extends Fragment {
         @Override
         public void run() {
             System.out.println("loop activos");
+            if(MainActivity.mainActivity!=null)
             MainActivity.mainActivity.
                     runOnUiThread(new Runnable() {
                         @Override
@@ -148,7 +149,7 @@ public class Games extends Fragment {
                 super.onProgressUpdate(values);
                 int caso = (Integer)values[5];
                 if(caso==0){
-                    sesionAct= GameView.newInstance(getContext(),"Activo: "+values[1],"Game Time: "+values[2],(String)values[4],(Integer)values[0],(Integer)values[6]);
+                    sesionAct= GameView.newInstance(getContext(),"Activo: "+values[1],"Game Time: "+values[2],(String)values[4],(Integer)values[0],(Integer)values[6],(String)values[3]);
                     ll_juegos.addView(sesionAct,0);
                 }else if(caso==1){
                     if(sesionAct.getSessionID()==(Integer)values[0]){
@@ -157,8 +158,8 @@ public class Games extends Fragment {
                         ll_juegos.removeViewAt(0);
                         String lbl = sesionAct.getNombre().getText().toString();
                         String lbl2 = sesionAct.getDuracion().getText().toString();
-                        ll_juegos.addView(GameView.newInstance(getContext(),lbl.replace("Activo: ",""),"Game Time: "+lbl2.replace("Game Time: ", ""),sesionAct.getStrLogo(),sesionAct.getSessionID(),sesionAct.getId_juego()),0);
-                        sesionAct=GameView.newInstance(getContext(),"Activo: "+values[1],"Game Time: "+values[2],(String)values[4],(Integer)values[0],(Integer)values[6]);
+                        ll_juegos.addView(GameView.newInstance(getContext(),lbl.replace("Activo: ", ""),"Game Time: "+lbl2.replace("Game Time: ", ""),sesionAct.getStrLogo(),sesionAct.getSessionID(),sesionAct.getId_juego(),sesionAct.getInicio().getText()+""),0);
+                        sesionAct=GameView.newInstance(getContext(),"Activo: "+values[1],"Game Time: "+values[2],(String)values[4],(Integer)values[0],(Integer)values[6],(String)values[3]);
                         ll_juegos.addView(sesionAct,0);
                     }
 
@@ -167,7 +168,7 @@ public class Games extends Fragment {
                     ll_juegos.removeViewAt(0);
                     String lbl = sesionAct.getNombre().getText().toString();
                     String lbl2 = sesionAct.getDuracion().getText().toString();
-                    ll_juegos.addView(GameView.newInstance(getContext(),lbl.replace("Activo: ",""),"Game Time: "+lbl2.replace("Game Time: ", ""),sesionAct.getStrLogo(),sesionAct.getSessionID(),sesionAct.getId_juego()),0);
+                    ll_juegos.addView(GameView.newInstance(getContext(),lbl.replace("Activo: ",""),"Game Time: "+lbl2.replace("Game Time: ", ""),sesionAct.getStrLogo(),sesionAct.getSessionID(),sesionAct.getId_juego(),sesionAct.getInicio().getText()+""),0);
                     sesionAct=null;
 
                 }

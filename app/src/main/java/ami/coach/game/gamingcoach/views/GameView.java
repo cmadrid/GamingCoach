@@ -17,6 +17,7 @@ public class GameView extends FrameLayout {
 
     private TextView nombre_juego;
     private TextView duracion_sesion;
+    private TextView inicio_sesion;
     private int sessionID;
     int id_juego;
     private ImageView logo_juego;
@@ -24,16 +25,16 @@ public class GameView extends FrameLayout {
 
     private static Context mContext;
 
-    public static GameView newInstance(Context ctx,String nombre,String duracion,String ruta,int sessionID,int id_juego) {
+    public static GameView newInstance(Context ctx,String nombre,String duracion,String ruta,int sessionID,int id_juego,String inicio) {
         GameView view = new GameView(ctx);
-        view.setParams(nombre, duracion, ruta, sessionID,id_juego);
+        view.setParams(nombre, duracion, ruta, sessionID,id_juego,inicio);
         view.setOnClickListener(onClick());
         view.setOnLongClickListener(onLongClick());
         return view;
     }
-    public static GameView newInstancePop(Context ctx,String nombre,String duracion,String ruta,int sessionID,int id_juego) {
+    public static GameView newInstancePop(Context ctx,String nombre,String duracion,String ruta,int sessionID,int id_juego,String inicio) {
         GameView view = new GameView(ctx);
-        view.setParams(nombre, duracion, ruta, sessionID,id_juego);
+        view.setParams(nombre, duracion, ruta, sessionID, id_juego,inicio);
         return view;
     }
     public GameView(Context context, AttributeSet attrs, int defStyle)
@@ -60,14 +61,16 @@ public class GameView extends FrameLayout {
         View mHeader = inflater.inflate(R.layout.view_game, this);
         nombre_juego = (TextView)mHeader.findViewById(R.id.nombre_juego);
         duracion_sesion = (TextView)mHeader.findViewById(R.id.duracion);
+        inicio_sesion = (TextView)mHeader.findViewById(R.id.inicio);
         logo_juego = (ImageView)mHeader.findViewById(R.id.logo_juego);
     }
 
-    public void setParams(String titulo,String duracion, String ruta,int sessionID,int id_juego){
+    public void setParams(String titulo,String duracion, String ruta,int sessionID,int id_juego,String inicio){
         setNombre(titulo);
         setDuracion(duracion);
         setLogo(ruta);
         setId_juego(id_juego);
+        setInicio(inicio);
         this.strLogo = ruta;
         this.sessionID = sessionID;
     }
@@ -77,6 +80,9 @@ public class GameView extends FrameLayout {
     }
     public void setDuracion(String duracion){
         duracion_sesion.setText(duracion);
+    }
+    public void setInicio(String inicio){
+        inicio_sesion.setText(inicio);
     }
 
     public int getSessionID(){
@@ -92,6 +98,9 @@ public class GameView extends FrameLayout {
     }
     public TextView getDuracion() {
         return duracion_sesion;
+    }
+    public TextView getInicio() {
+        return inicio_sesion;
     }
 
     /*

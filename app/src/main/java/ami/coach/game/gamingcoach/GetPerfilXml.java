@@ -121,8 +121,8 @@ public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
             String ruta=mediaFile.getAbsolutePath();
             if(!mediaFile.exists()){
 
-                if(!path.mkdirs())
-                    throw new Exception("Error creando ruta");
+                if(path.mkdirs())
+                    System.out.println("archivo creado");
 
                 URL url = new URL(node.getTextContent());
                 //URL url = new URL("https://www.google.com.ec/logos/doodles/2015/holidays-2015-day-1-6575248619077632-hp.jpg");
@@ -144,7 +144,7 @@ public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
 
                     System.out.println("archivo: " + mediaFile.getAbsoluteFile());
                 }catch (SocketTimeoutException e){
-                    System.out.println("Error descargando la imagen: "+e.getMessage());
+                    System.out.println("Error timeout descargando la imagen de perfil: "+e.getMessage());
                     System.out.println("archivo: " + null);
                     ruta = null;
                 }

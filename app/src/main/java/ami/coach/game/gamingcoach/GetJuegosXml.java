@@ -79,8 +79,8 @@ public class GetJuegosXml extends AsyncTask<String,Void,Object[]> {
                 String ruta=mediaFile.getAbsolutePath();
                 if(!mediaFile.exists()){
 
-                    if(!path.mkdirs())
-                        throw new Exception("Error creando ruta");
+                    if(path.mkdirs())
+                        System.out.println("archivo creado");
 
                     URL url = new URL(currentGame.getElementsByTagName("logo").item(0).getTextContent());
                     URLConnection urlConnection = url.openConnection();
