@@ -5,7 +5,6 @@
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
     tools:context=".InfoGame">
 
     <android.support.design.widget.AppBarLayout
@@ -13,6 +12,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:id="@+id/imageView"
+            android:background="@color/black"
+
+            android:src="@drawable/mirror_edge_test"/>
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"

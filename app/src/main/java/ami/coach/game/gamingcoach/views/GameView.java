@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import ami.coach.game.gamingcoach.InfoGame;
+import ami.coach.game.gamingcoach.InfoJuego;
 import ami.coach.game.gamingcoach.R;
 
 public class GameView extends FrameLayout {
@@ -127,7 +128,7 @@ public class GameView extends FrameLayout {
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(mContext, InfoGame.class);
+                Intent intent = new Intent(mContext, InfoJuego.class);
                 intent.putExtra("id",((GameView)v).getId_juego()+"");
                 mContext.startActivity(intent);
             }

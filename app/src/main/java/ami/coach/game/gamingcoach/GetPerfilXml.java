@@ -330,6 +330,7 @@ public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
 
     public void generaDialogo(String titulo,String mensaje){
 
+        if(ctx!=null) return;
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(ctx);
         alertDialogBuilder.setTitle(titulo);
 

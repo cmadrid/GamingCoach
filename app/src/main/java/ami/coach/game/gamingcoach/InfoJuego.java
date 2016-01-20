@@ -1,19 +1,28 @@
 package ami.coach.game.gamingcoach;
 
 import android.support.design.widget.TabLayout;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+
+import android.widget.TextView;
 
 import layout.Chart;
 import layout.Games;
 
-public class InfoGame extends AppCompatActivity {
+public class InfoJuego extends AppCompatActivity {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -23,7 +32,7 @@ public class InfoGame extends AppCompatActivity {
      * may be best to switch to a
      * {@link android.support.v4.app.FragmentStatePagerAdapter}.
      */
-    //private SectionsPagerAdapter mSectionsPagerAdapter;
+    private SectionsPagerAdapter mSectionsPagerAdapter;
 
     Games actividades;
     Chart estadisticas;
@@ -31,41 +40,49 @@ public class InfoGame extends AppCompatActivity {
     /**
      * The {@link ViewPager} that will host the section contents.
      */
-    //private ViewPager mViewPager;
+    private ViewPager mViewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_info_game);
+        setContentView(R.layout.activity_info_juego);
+
 
         this.juego=getIntent().getExtras().getString("id");
         actividades = Games.newInstance(juego);
         estadisticas = Chart.newInstance();
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-
-
-
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-        SectionsPagerAdapter mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
-        ViewPager mViewPager = (ViewPager) findViewById(R.id.container);
+        mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
         tabLayout.setupWithViewPager(mViewPager);
 
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+                        .setAction("Action", null).show();
+            }
+        });
 
     }
 
-/*
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_info_game, menu);
+        getMenuInflater().inflate(R.menu.menu_info_juego, menu);
         return true;
     }
 
@@ -79,17 +96,13 @@ public class InfoGame extends AppCompatActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }else if(id==android.R.id.home) {
+            this.finish();
+            return true;
         }
-
         return super.onOptionsItemSelected(item);
     }
-    */
 
-
-    /**
-     * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
-     * one of the sections/tabs/pages.
-     */
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
 
         public SectionsPagerAdapter(FragmentManager fm) {
@@ -107,7 +120,7 @@ public class InfoGame extends AppCompatActivity {
 
         @Override
         public int getCount() {
-            // Show 2 total pages.
+            // Show 3 total pages.
             return 2;
         }
 
