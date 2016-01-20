@@ -1,5 +1,7 @@
 package ami.coach.game.gamingcoach;
 
+import android.app.ActionBar;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -7,10 +9,13 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 
@@ -23,7 +28,7 @@ import ami.coach.game.gamingcoach.database.DBSesiones;
  * Created by César Madrid
  * on 12/22/2015.
  */
-public class RegistroActivity extends AppCompatActivity{
+public class RegistroActivity extends Activity {
 
     ImageView boton_log;
     EditText id;
@@ -59,11 +64,27 @@ public class RegistroActivity extends AppCompatActivity{
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        View decorView = getWindow().getDecorView();
+        // Hide the status bar.
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
+
         setContentView(R.layout.registro_layout);
+
+
         ctx = getApplicationContext();
         activity=this;
+
+
+
+
         boton_log = (ImageView)findViewById(R.id.btnLog);
         id = (EditText)findViewById(R.id.id_steam);
+        if (Build.VERSION.SDK_INT < 16) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        }
         boton_log.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -156,6 +177,7 @@ public class RegistroActivity extends AppCompatActivity{
         String id7="423880";
 */
             Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.HOUR_OF_DAY, -5);
             //calendar.add(Calendar.DAY_OF_MONTH, -5);
             if(id1!=null){
                 dbSesiones.insertar(id1, 35 + "", calendar.getTime());
@@ -191,6 +213,7 @@ public class RegistroActivity extends AppCompatActivity{
 
                 calendar.add(Calendar.DAY_OF_MONTH, 6);
             }
+            dbSesiones.setActualizacionInicio();
 
         }catch (Exception e ){
             System.out.println("error creando base de sesiones automatica");

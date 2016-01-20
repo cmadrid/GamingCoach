@@ -80,6 +80,11 @@ public class DBSesiones {
             return db.query(QB, campos, JUEGO + "=? and datetime('now','-5 hours','-45 minutes')<" + ACTUAIZACION, args, null, null, ACTUAIZACION+" desc");
 
     }
+
+    public void setActualizacionInicio(){
+        db.execSQL("Update "+NOMBRE_TABLA+" set "+ACTUAIZACION+"="+INICIO);
+    }
+
     public Cursor consultar(String juego){
         //insert  into contactos
 
