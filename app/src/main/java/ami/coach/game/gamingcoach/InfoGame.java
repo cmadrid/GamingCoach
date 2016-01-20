@@ -8,6 +8,8 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
+import android.widget.TextView;
+
 import layout.Chart;
 import layout.Games;
 
@@ -26,6 +28,7 @@ public class InfoGame extends AppCompatActivity {
     Games actividades;
     Chart estadisticas;
     String juego;
+    String nombre_juego;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -37,6 +40,9 @@ public class InfoGame extends AppCompatActivity {
         setContentView(R.layout.activity_info_game);
 
         this.juego=getIntent().getExtras().getString("id");
+        this.nombre_juego=getIntent().getExtras().getString("nombre");
+        TextView nombreJuego = (TextView)findViewById(R.id.nombre_juego);
+        nombreJuego.setText(this.nombre_juego);
         actividades = Games.newInstance(juego);
         estadisticas = Chart.newInstance();
 
