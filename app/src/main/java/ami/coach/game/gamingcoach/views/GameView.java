@@ -1,5 +1,7 @@
 package ami.coach.game.gamingcoach.views;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -11,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import ami.coach.game.gamingcoach.InfoGame;
+import ami.coach.game.gamingcoach.MainActivity;
 import ami.coach.game.gamingcoach.InfoJuego;
 import ami.coach.game.gamingcoach.R;
 
@@ -24,18 +27,27 @@ public class GameView extends FrameLayout {
     private ImageView logo_juego;
     private String strLogo;
 
-    private static Context mContext;
 
     public static GameView newInstance(Context ctx,String nombre,String duracion,String ruta,int sessionID,int id_juego,String inicio) {
         GameView view = new GameView(ctx);
         view.setParams(nombre, duracion, ruta, sessionID,id_juego,inicio);
-        view.setOnClickListener(onClick());
+        view.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(v.getContext(), InfoGame.class);
+                intent.putExtra("id", ((GameView) v).getId_juego() + "");
+                intent.putExtra("nombre",((GameView) v).getNombre().getText().toString()+"");
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity)v.getContext(),((GameView) v).getNombre(),"nombreJuego");
+                v.getContext().startActivity(intent, options.toBundle());
+            }
+        });
         view.setOnLongClickListener(onLongClick());
         return view;
     }
     public static GameView newInstancePop(Context ctx,String nombre,String duracion,String ruta,int sessionID,int id_juego,String inicio) {
         GameView view = new GameView(ctx);
-        view.setParams(nombre, duracion, ruta, sessionID, id_juego,inicio);
+        view.setParams(nombre, duracion, ruta, sessionID, id_juego, inicio);
         return view;
     }
     public GameView(Context context, AttributeSet attrs, int defStyle)
@@ -57,7 +69,6 @@ public class GameView extends FrameLayout {
     }
 
     private void initData(Context context){
-        mContext = context;
         LayoutInflater inflater = LayoutInflater.from(context);
         View mHeader = inflater.inflate(R.layout.view_game, this);
         nombre_juego = (TextView)mHeader.findViewById(R.id.nombre_juego);
@@ -123,17 +134,6 @@ public class GameView extends FrameLayout {
             logo_juego.setImageURI(Uri.parse(ruta));
     }
 
-    public static OnClickListener onClick(){
-        return new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(mContext, InfoJuego.class);
-                intent.putExtra("id",((GameView)v).getId_juego()+"");
-                mContext.startActivity(intent);
-            }
-        };
-    }
 
     public static OnLongClickListener onLongClick(){
         return new OnLongClickListener() {

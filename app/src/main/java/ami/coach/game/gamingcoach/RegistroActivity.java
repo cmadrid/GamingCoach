@@ -65,10 +65,6 @@ public class RegistroActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        View decorView = getWindow().getDecorView();
-        // Hide the status bar.
-        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
-        decorView.setSystemUiVisibility(uiOptions);
 
         setContentView(R.layout.registro_layout);
 
