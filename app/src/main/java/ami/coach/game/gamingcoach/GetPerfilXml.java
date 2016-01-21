@@ -176,6 +176,7 @@ public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
             result[2]="Se ha sobrepasado el tiempo de espera, vuelva a intentar en un momento.";
         }
         catch (Exception e){
+            e.printStackTrace();
             System.out.println("error: "+e.getMessage());
             System.out.println("error: "+e.getClass());
             result[0]="Error";

@@ -1,19 +1,21 @@
 package ami.coach.game.gamingcoach.views;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import ami.coach.game.gamingcoach.InfoGame;
-import ami.coach.game.gamingcoach.MainActivity;
 import ami.coach.game.gamingcoach.InfoJuego;
 import ami.coach.game.gamingcoach.R;
 
@@ -30,18 +32,11 @@ public class GameView extends FrameLayout {
 
     public static GameView newInstance(Context ctx,String nombre,String duracion,String ruta,int sessionID,int id_juego,String inicio) {
         GameView view = new GameView(ctx);
-        view.setParams(nombre, duracion, ruta, sessionID,id_juego,inicio);
-        view.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                Intent intent = new Intent(v.getContext(), InfoGame.class);
-                intent.putExtra("id", ((GameView) v).getId_juego() + "");
-                intent.putExtra("nombre",((GameView) v).getNombre().getText().toString()+"");
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity)v.getContext(),((GameView) v).getNombre(),"nombreJuego");
-                v.getContext().startActivity(intent, options.toBundle());
-            }
-        });
+        view.setParams(nombre, duracion, ruta, sessionID, id_juego, inicio);
+        if(Build.VERSION.SDK_INT>20)
+            view.setOnClickListener(onClick21());
+        else
+            view.setOnClickListener(onClick());
         view.setOnLongClickListener(onLongClick());
         return view;
     }
@@ -130,9 +125,42 @@ public class GameView extends FrameLayout {
     public void setLogo(String ruta){
         if(ruta==null)
             logo_juego.setImageResource(R.drawable.no_logo);
-        else
+        else {
             logo_juego.setImageURI(Uri.parse(ruta));
+        }
     }
+
+    @TargetApi(21)
+    public static OnClickListener onClick21(){
+        return new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(v.getContext(), InfoJuego.class);
+                intent.putExtra("id", ((GameView) v).getId_juego() + "");
+                intent.putExtra("nombre",((GameView) v).getNombre().getText().toString()+"");
+                intent.putExtra("rutaLogo",((GameView) v).getStrLogo());
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity)v.getContext(),new Pair<View, String>(((GameView) v).getNombre(),"nombreJuego"),new Pair<View, String>(((GameView) v).getNombre(),"logoJuego"));
+                v.getContext().startActivity(intent, options.toBundle());
+            }
+        };
+    }
+
+
+    public static OnClickListener onClick(){
+        return new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                Intent intent = new Intent(v.getContext(), InfoJuego.class);
+                intent.putExtra("id", ((GameView) v).getId_juego() + "");
+                intent.putExtra("nombre",((GameView) v).getNombre().getText().toString());
+                intent.putExtra("rutaLogo",((GameView) v).getStrLogo());
+                v.getContext().startActivity(intent);
+            }
+        };
+    }
+
 
 
     public static OnLongClickListener onLongClick(){

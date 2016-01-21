@@ -55,9 +55,6 @@
         <service android:name=".ServiceBackground" />
 
         <activity
-            android:name=".InfoGame"
-            android:theme="@style/Dialog" />
-        <activity
             android:name=".InfoJuego"
             android:label=""
             android:theme="@style/AppTheme.NoActionBar"></activity>

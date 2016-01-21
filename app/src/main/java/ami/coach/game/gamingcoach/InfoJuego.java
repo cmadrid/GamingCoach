@@ -1,5 +1,7 @@
 package ami.coach.game.gamingcoach;
 
+import android.media.Image;
+import android.net.Uri;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -17,6 +19,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import layout.Chart;
@@ -37,6 +40,8 @@ public class InfoJuego extends AppCompatActivity {
     Games actividades;
     Chart estadisticas;
     String juego;
+    String nombre_juego;
+    String rutaLogo;
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -49,6 +54,19 @@ public class InfoJuego extends AppCompatActivity {
 
 
         this.juego=getIntent().getExtras().getString("id");
+        this.nombre_juego=getIntent().getExtras().getString("nombre");
+        this.rutaLogo=getIntent().getExtras().getString("rutaLogo");
+        TextView nombreJuego = (TextView)findViewById(R.id.nombre_juego);
+        ImageView logo_juego = (ImageView)findViewById(R.id.logo_juego);
+        nombreJuego.setText(this.nombre_juego);
+
+        if(rutaLogo==null)
+            logo_juego.setImageResource(R.drawable.no_logo);
+        else {
+            logo_juego.setImageURI(Uri.parse(rutaLogo));
+        }
+
+
         actividades = Games.newInstance(juego);
         estadisticas = Chart.newInstance();
 
@@ -97,7 +115,8 @@ public class InfoJuego extends AppCompatActivity {
         if (id == R.id.action_settings) {
             return true;
         }else if(id==android.R.id.home) {
-            this.finish();
+            //this.finish();
+            onBackPressed();
             return true;
         }
         return super.onOptionsItemSelected(item);
