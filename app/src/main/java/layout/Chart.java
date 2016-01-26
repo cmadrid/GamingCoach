@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -189,6 +190,59 @@ public class Chart extends Fragment {
 
         return m;
     }
+
+    public String getMonth(int month){
+        switch (month){
+            case 1: return "Enero";
+            case 2: return "Febrero";
+            case 3: return "Marzo";
+            case 4: return "Abril";
+            case 5: return "Mayo";
+            case 6: return "Junio";
+            case 7: return "Julio";
+            case 8: return "Agosto";
+            case 9: return "Septiembre";
+            case 10: return "Odctubre";
+            case 11: return "Noviembre";
+            case 12: return "Diciembre";
+        }
+        return "";
+    }
+
+
+    public void asd(){
+        String id="17410";
+        DBSesiones sesion = new DBSesiones(getActivity());
+        Cursor datos = sesion.consultarAnio(id);
+        ArrayList<Pair<String,Integer>> lista = new ArrayList<>();
+
+        if (datos.moveToFirst()) {
+            int mes = datos.getInt(0);
+            int anio = datos.getInt(1);
+
+            lista.add(new Pair(getMonth(mes)+"-"+anio,datos.getInt(2)));
+            while(datos.moveToNext()){
+                int mesAct = datos.getInt(0);
+                if(mesAct-mes<0){
+                    while(mes<12){
+                        mes++;
+                        lista.add(new Pair(getMonth(mes)+"-"+anio,0));
+                    }
+                    mes=0;
+                    anio= datos.getInt(1);
+                }
+
+                while(mesAct-mes>1){
+                    mes++;
+                    lista.add(new Pair(getMonth(mes)+"-"+anio,0));
+                }
+
+                lista.add(new Pair(getMonth(mesAct)+"-"+anio,datos.getInt(2)));
+
+            }
+        }
+    }
+
 
     public void crearMapasV(){
 
