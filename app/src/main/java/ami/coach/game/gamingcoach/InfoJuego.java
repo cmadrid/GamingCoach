@@ -68,9 +68,8 @@ public class InfoJuego extends AppCompatActivity {
             logo_juego.setImageURI(Uri.parse(rutaLogo));
         }
 
-
         actividades = Games.newInstance(juego);
-        estadisticas = Chart.newInstance();
+        estadisticas = Chart.newInstance(juego);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

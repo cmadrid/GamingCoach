@@ -71,7 +71,12 @@ public class Chart extends Fragment {
         crearMapasV();
 
         crearBarData();
-
+/*
+        System.out.println("datos");
+        for(Pair<String,Integer> p : barDataExample)
+            System.out.println(p.first+": "+p.second);
+        System.out.println("fin Datos");
+*/
         if(this.id == null) {
             list.add(new LineChartItem(generateDataLine(mapaTest), lv));
             list.add(new PieChartItem(generateDataPie(mapaTest), lv));
@@ -231,60 +236,59 @@ public class Chart extends Fragment {
     }
 
     public void crearBarData(){
+        DBSesiones sesion = new DBSesiones(getActivity());
+        Cursor datos = sesion.consultarAnio(id);
+        barDataExample = new ArrayList<>();
+
+        if (datos.moveToFirst()) {
+            int anio = Integer.parseInt(datos.getString(0))%1000;
+            int mes = Integer.parseInt(datos.getString(1));
+
+            barDataExample.add(new Pair(getMonth(mes)+"-"+anio,datos.getInt(2)));
+            while(datos.moveToNext()){
+                int mesAct = Integer.parseInt(datos.getString(1));
+                //System.out.println(getMonth(mesAct)+" : "+anio);
+                if(mesAct-mes<0){
+                    while(mes<12){
+                        mes++;
+                        barDataExample.add(new Pair(getMonth(mes)+"-"+anio,0));
+                    }
+                    mes=0;
+                    anio = Integer.parseInt(datos.getString(0))%1000;
+                }
+
+                while(mesAct-mes>1){
+                    mes++;
+                    barDataExample.add(new Pair(getMonth(mes)+"-"+anio,0));
+                }
+
+                barDataExample.add(new Pair(getMonth(mesAct)+"-"+anio,datos.getInt(2)));
+                mes=mesAct;
+
+            }
+        }
+        sesion.close();
 
     }
 
     public String getMonth(int month){
         switch (month){
-            case 1: return "Enero";
-            case 2: return "Febrero";
-            case 3: return "Marzo";
-            case 4: return "Abril";
-            case 5: return "Mayo";
-            case 6: return "Junio";
-            case 7: return "Julio";
-            case 8: return "Agosto";
-            case 9: return "Septiembre";
-            case 10: return "Odctubre";
-            case 11: return "Noviembre";
-            case 12: return "Diciembre";
+            case 1: return "Ene";
+            case 2: return "Feb";
+            case 3: return "Mar";
+            case 4: return "Abr";
+            case 5: return "May";
+            case 6: return "Jun";
+            case 7: return "Jul";
+            case 8: return "Ago";
+            case 9: return "Sep";
+            case 10: return "Oct";
+            case 11: return "Nov";
+            case 12: return "Dic";
         }
         return "";
     }
 
-
-    public void asd(){
-        String id="17410";
-        DBSesiones sesion = new DBSesiones(getActivity());
-        Cursor datos = sesion.consultarAnio(id);
-        ArrayList<Pair<String,Integer>> lista = new ArrayList<>();
-
-        if (datos.moveToFirst()) {
-            int mes = datos.getInt(0);
-            int anio = datos.getInt(1);
-
-            lista.add(new Pair(getMonth(mes)+"-"+anio,datos.getInt(2)));
-            while(datos.moveToNext()){
-                int mesAct = datos.getInt(0);
-                if(mesAct-mes<0){
-                    while(mes<12){
-                        mes++;
-                        lista.add(new Pair(getMonth(mes)+"-"+anio,0));
-                    }
-                    mes=0;
-                    anio= datos.getInt(1);
-                }
-
-                while(mesAct-mes>1){
-                    mes++;
-                    lista.add(new Pair(getMonth(mes)+"-"+anio,0));
-                }
-
-                lista.add(new Pair(getMonth(mesAct)+"-"+anio,datos.getInt(2)));
-
-            }
-        }
-    }
 
 
     public void crearMapasV(){
