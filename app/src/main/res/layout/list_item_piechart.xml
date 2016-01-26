@@ -4,9 +4,17 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Resumen Semanal General"
+        android:id="@+id/txtv_titulo"
+        android:textAlignment="center"
+        android:textSize="@dimen/text_margin"/>
+
     <com.github.mikephil.charting.charts.PieChart
         android:id="@+id/chart"
         android:layout_width="match_parent"
-        android:layout_height="345dp"/>
+        android:layout_height="335dp" />
 
 </LinearLayout>

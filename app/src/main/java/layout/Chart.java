@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.TextView;
 
 
 import com.github.mikephil.charting.data.BarData;
@@ -70,12 +71,13 @@ public class Chart extends Fragment {
 
         crearMapasV();
 
-        crearBarData();
+
 
         if(this.id == null) {
             list.add(new LineChartItem(generateDataLine(mapaTest), lv));
             list.add(new PieChartItem(generateDataPie(mapaTest), lv));
         }else{
+            crearBarData();
             list.add(new BarChartItem(generateDataBar(barDataExample),lv));
         }
         //addChart();
@@ -87,6 +89,8 @@ public class Chart extends Fragment {
         return V;
 
     }
+
+
 
     private LineData generateDataLine(HashMap<String,ArrayList<Entry>> entradas) {
 

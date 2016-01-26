@@ -70,7 +70,7 @@ public class InfoJuego extends AppCompatActivity {
 
 
         actividades = Games.newInstance(juego);
-        estadisticas = Chart.newInstance();
+        estadisticas = Chart.newInstance(juego);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);

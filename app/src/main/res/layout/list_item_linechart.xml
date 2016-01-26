@@ -4,9 +4,25 @@
     android:layout_height="match_parent"
     android:orientation="vertical" >
 
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Resumen Semanal"
+        android:id="@+id/txtv_titulo"
+        android:textAlignment="center"
+        android:textSize="@dimen/item_touch_helper_max_drag_scroll_per_frame"/>
+
+    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Horas por Juego"
+        android:id="@+id/txtv_horas"
+        android:textAlignment="center"
+        android:textSize="@dimen/text_margin"/>
+
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/chart"
         android:layout_width="match_parent"
-        android:layout_height="345dp" />
+        android:layout_height="335dp" />
 
 </LinearLayout>
