@@ -1,7 +1,9 @@
 package ami.coach.game.gamingcoach;
 
+import android.app.Activity;
 import android.media.Image;
 import android.net.Uri;
+import android.os.Build;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -96,6 +98,12 @@ public class InfoJuego extends AppCompatActivity {
 
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(Build.VERSION.SDK_INT>20)
+            this.finishAfterTransition();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

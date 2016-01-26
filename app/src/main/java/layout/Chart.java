@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,9 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -26,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import ami.coach.game.gamingcoach.Juego;
 import ami.coach.game.gamingcoach.R;
 import ami.coach.game.gamingcoach.database.DBSesiones;
 
@@ -33,10 +38,20 @@ import ami.coach.game.gamingcoach.database.DBSesiones;
 public class Chart extends Fragment {
 
     HashMap<String,ArrayList<Entry>> mapaTest;
+    ArrayList<Pair<String,Integer>> barDataExample = new ArrayList<>();
+    private String id;
 
 
     public static Chart newInstance() {
         return  new Chart();
+    }
+
+    public static Chart newInstance(String id){
+
+        Chart chart = new Chart();
+        chart.id = id;
+        return chart;
+
     }
 
     public Chart() {
@@ -55,9 +70,14 @@ public class Chart extends Fragment {
 
         crearMapasV();
 
-        list.add(new LineChartItem(generateDataLine(mapaTest),lv));
-        list.add(new PieChartItem(generateDataPie(mapaTest),lv));
+        crearBarData();
 
+        if(this.id == null) {
+            list.add(new LineChartItem(generateDataLine(mapaTest), lv));
+            list.add(new PieChartItem(generateDataPie(mapaTest), lv));
+        }else{
+            list.add(new BarChartItem(generateDataBar(barDataExample),lv));
+        }
         //addChart();
 
         ChartDataAdapter cda = new ChartDataAdapter(getActivity(), list);
@@ -121,6 +141,26 @@ public class Chart extends Fragment {
 
     }
 
+    private BarData generateDataBar(ArrayList<Pair<String,Integer>> entradas) {
+
+
+        ArrayList<BarEntry> entries = new ArrayList<>();
+        ArrayList<String> months = new ArrayList<>();
+
+        for(int i=0;i<entradas.size();i++) {
+            entries.add(new BarEntry(entradas.get(i).second, i));
+            months.add(entradas.get(i).first);
+        }
+
+        BarDataSet d = new BarDataSet(entries, this.id);
+        d.setBarSpacePercent(20f);
+        d.setColors(ColorTemplate.COLORFUL_COLORS);
+        d.setHighLightAlpha(255);
+
+        BarData cd = new BarData(months, d);
+        return cd;
+    }
+
 
     /** adapter that supports 3 different item types */
     private class ChartDataAdapter extends ArrayAdapter<ChartItem> {
@@ -156,7 +196,7 @@ public class Chart extends Fragment {
         return q;
     }
 */
-    /*
+/*
     private ArrayList<String> getMonths() {
 
         ArrayList<String> m = new ArrayList<>();
@@ -188,6 +228,10 @@ public class Chart extends Fragment {
         m.add("Sab");
 
         return m;
+    }
+
+    public void crearBarData(){
+
     }
 
     public void crearMapasV(){
