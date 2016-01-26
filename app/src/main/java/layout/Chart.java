@@ -90,8 +90,6 @@ public class Chart extends Fragment {
 
     }
 
-
-
     private LineData generateDataLine(HashMap<String,ArrayList<Entry>> entradas) {
 
         Iterator<Map.Entry<String, ArrayList<Entry>>> it = entradas.entrySet().iterator();
@@ -235,8 +233,60 @@ public class Chart extends Fragment {
     }
 
     public void crearBarData(){
+        DBSesiones sesion = new DBSesiones(getActivity());
+        Cursor datos = sesion.consultarAnio(id);
+        barDataExample = new ArrayList<>();
+
+        if (datos.moveToFirst()) {
+            int anio = Integer.parseInt(datos.getString(0))%1000;
+            int mes = Integer.parseInt(datos.getString(1));
+
+            barDataExample.add(new Pair(getMonth(mes)+"-"+anio,datos.getInt(2)));
+            while(datos.moveToNext()){
+                int mesAct = Integer.parseInt(datos.getString(1));
+                //System.out.println(getMonth(mesAct)+" : "+anio);
+                if(mesAct-mes<0){
+                    while(mes<12){
+                        mes++;
+                        barDataExample.add(new Pair(getMonth(mes)+"-"+anio,0));
+                    }
+                    mes=0;
+                    anio = Integer.parseInt(datos.getString(0))%1000;
+                }
+
+                while(mesAct-mes>1){
+                    mes++;
+                    barDataExample.add(new Pair(getMonth(mes)+"-"+anio,0));
+                }
+
+                barDataExample.add(new Pair(getMonth(mesAct)+"-"+anio,datos.getInt(2)));
+                mes=mesAct;
+
+            }
+        }
+        sesion.close();
 
     }
+
+    public String getMonth(int month){
+        switch (month){
+            case 1: return "Ene";
+            case 2: return "Feb";
+            case 3: return "Mar";
+            case 4: return "Abr";
+            case 5: return "May";
+            case 6: return "Jun";
+            case 7: return "Jul";
+            case 8: return "Ago";
+            case 9: return "Sep";
+            case 10: return "Oct";
+            case 11: return "Nov";
+            case 12: return "Dic";
+        }
+        return "";
+    }
+
+
 
     public void crearMapasV(){
 

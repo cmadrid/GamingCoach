@@ -120,6 +120,17 @@ public class DBSesiones {
 
 
 
+    public Cursor consultarAnio(String id){
+
+        String[] campos = new String[] {"strftime('%Y',"+INICIO+")","strftime('%m',"+INICIO+")","sum("+MINUTOS+")"};
+        String[] args = new String[] {id,"datetime('now','-5 hours','-12 months')"};
+
+
+        return db.query(NOMBRE_TABLA, campos, JUEGO+"="+id+" and "+INICIO+">datetime('now','-5 hours','-12 months')", null,"1,2", null, "1,2");
+    }
+
+
+
     public void vaciar(){
         db.delete(NOMBRE_TABLA,null,null);
     }

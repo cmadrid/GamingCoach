@@ -209,6 +209,34 @@ public class RegistroActivity extends Activity {
 
                 calendar.add(Calendar.DAY_OF_MONTH, 6);
             }
+
+
+
+            calendar.add(Calendar.MONTH, -1);//dic
+            //dbSesiones.insertar(id1, 110 + "", calendar.getTime());
+            calendar.add(Calendar.MONTH, -1);//nov
+            //dbSesiones.insertar(id1, 95 + "", calendar.getTime());
+            calendar.add(Calendar.MONTH, -1);//oct
+            //dbSesiones.insertar(id1, 40 + "", calendar.getTime());
+            calendar.add(Calendar.MONTH, -1);//sep
+            dbSesiones.insertar(id1, 85 + "", calendar.getTime());
+            calendar.add(Calendar.MONTH, -1);//ago
+            dbSesiones.insertar(id1, 50 + "", calendar.getTime());
+            calendar.add(Calendar.MONTH, -1);//jul
+            dbSesiones.insertar(id1, 84 + "", calendar.getTime());
+            calendar.add(Calendar.MONTH, -1);//jun
+            dbSesiones.insertar(id1, 112 + "", calendar.getTime());
+            calendar.add(Calendar.MONTH, -1);//may
+            dbSesiones.insertar(id1, 140 + "", calendar.getTime());
+            calendar.add(Calendar.MONTH, -1);//abr
+            //dbSesiones.insertar(id1, 9 + "", calendar.getTime());
+            calendar.add(Calendar.MONTH, -1);//marz
+            dbSesiones.insertar(id1, 50 + "", calendar.getTime());
+            calendar.add(Calendar.MONTH, -1);//feb
+            dbSesiones.insertar(id1, 35 + "", calendar.getTime());
+
+
+
             dbSesiones.setActualizacionInicio();
 
         }catch (Exception e ){
