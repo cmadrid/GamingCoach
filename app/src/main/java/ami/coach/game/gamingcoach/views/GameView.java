@@ -103,6 +103,8 @@ public class GameView extends FrameLayout {
     public TextView getNombre() {
         return nombre_juego;
     }
+
+    public ImageView getLogo_juego(){return this.logo_juego;}
     public TextView getDuracion() {
         return duracion_sesion;
     }
@@ -136,12 +138,15 @@ public class GameView extends FrameLayout {
             @Override
             public void onClick(View v) {
 
+                GameView gv = (GameView)v;
                 Intent intent = new Intent(v.getContext(), InfoJuego.class);
-                intent.putExtra("id", ((GameView) v).getId_juego() + "");
-                intent.putExtra("nombre",((GameView) v).getNombre().getText().toString()+"");
-                intent.putExtra("rutaLogo",((GameView) v).getStrLogo());
-                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity)v.getContext(),new Pair<View, String>(((GameView) v).getNombre(),"nombreJuego"),new Pair<View, String>(((GameView) v).getNombre(),"logoJuego"));
-                v.getContext().startActivity(intent, options.toBundle());
+                intent.putExtra("id", gv.getId_juego() + "");
+                intent.putExtra("nombre",gv.getNombre().getText().toString()+"");
+                intent.putExtra("rutaLogo", gv.getStrLogo());
+                Pair<View,String> p1=Pair.create((View)gv.getNombre(), "nombreJuego");
+                Pair<View,String> p2 = Pair.create((View)gv.getLogo_juego(),"logoJuego");
+                ActivityOptions options = ActivityOptions.makeSceneTransitionAnimation((Activity)gv.getContext(),p1,p2);
+                gv.getContext().startActivity(intent, options.toBundle());
             }
         };
     }

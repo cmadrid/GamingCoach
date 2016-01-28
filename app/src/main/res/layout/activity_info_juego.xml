@@ -43,14 +43,7 @@
                 android:layout_height="wrap_content"
                 android:paddingLeft="50dp"
                 android:paddingTop="5dp"
-                style="@style/AudioFileInfoOverlayText"
-
-
-                android:text="NOMBRE DEL JUEGO"
-                android:textStyle="bold"
-                android:textSize="20dp"
-                android:textColor="@color/colorPrimary"
-                android:shadowColor="#010104" />
+                style="@style/AudioFileInfoOverlayText" />
 
 
         </RelativeLayout>

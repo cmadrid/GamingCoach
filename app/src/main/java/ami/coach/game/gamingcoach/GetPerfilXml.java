@@ -60,6 +60,7 @@ public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
     @Override
     protected Object[] doInBackground(String... params) {
         this.customUrl=params[0];
+
         Object result[] = new Object[6];
         String token = SystemClock.currentThreadTimeMillis()+"";
         try {
@@ -97,7 +98,7 @@ public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
             if(node==null){
                 result[0]="Error";
                 result[1]="Error de logueo";
-                result[2]="Usuario "+usuario+" no encontrado.";
+                result[2]="Usuario '"+usuario+"' no encontrado.\n 1.Ve a http://steamcomunity.com e inicia sesion\n2.Ve a 'Modificar mi perfil'\n3.Asegurate que tu URL personalizado sea el mismo que tu SteamID y vuelve a intentarlo.";
                 return result;
             }
             result[0]=node.getTextContent();
@@ -201,6 +202,7 @@ public class GetPerfilXml extends AsyncTask<String, Void, Object[]> {
             String titulo=result[1]+"";
             String mensaje=result[2]+"";
             if(!isOnline()){
+                this.ctx=MainActivity.mainActivity;
                 titulo="No se pudo establecer conexion";
                 mensaje="Revise su conexion a internet.";
             }

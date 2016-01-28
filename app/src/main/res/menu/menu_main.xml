@@ -10,4 +10,8 @@
         android:title="@string/mostrar_alerta"
         android:orderInCategory="200"
         app:showAsAction="never" />
+    <item android:id="@+id/llenar_Sesiones"
+        android:title="Llenar Sesiones"
+        android:orderInCategory="300"
+        app:showAsAction="never" />
 </menu>

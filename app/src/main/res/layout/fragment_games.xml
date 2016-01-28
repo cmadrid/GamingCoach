@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="layout.Games">
+    tools:context="layout.Games"
+    android:id="@+id/mainScroll">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"

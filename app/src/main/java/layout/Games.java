@@ -1,15 +1,21 @@
 package layout;
 
 
+import android.app.ActionBar;
 import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.TableLayout;
+import android.widget.TextView;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -22,6 +28,7 @@ import ami.coach.game.gamingcoach.views.GameView;
 public class Games extends Fragment {
 
     private LinearLayout ll_juegos;
+    private ScrollView mainScroll;
     private GameView sesionAct=null;
     String id=null;
     public static Games newInstance() {
@@ -43,6 +50,8 @@ public class Games extends Fragment {
 
             View V = inflater.inflate(R.layout.fragment_games, container, false);
             ll_juegos=(LinearLayout)V.findViewById(R.id.lista_juegos);
+            ll_juegos.setWeightSum(1);
+            mainScroll=(ScrollView)V.findViewById(R.id.mainScroll);
 
             addGames(id);
             if(id==null)
@@ -59,11 +68,22 @@ public class Games extends Fragment {
             Cursor datos = db_sesiones.consultar(id);
             if (datos.moveToFirst()) {
                 do {
-                    if(id==null)
-                        ll_juegos.addView(GameView.newInstance(getContext(), datos.getString(1), "Game Time: " + datos.getString(2), datos.getString(3),datos.getInt(4), datos.getInt(0),datos.getString(5)));
-                    else
-                        ll_juegos.addView(GameView.newInstancePop(getContext(), datos.getString(1), "Game Time: " + datos.getString(2), datos.getString(3), datos.getInt(4), datos.getInt(0),datos.getString(5)));
+                    if(id==null) {
+                        ll_juegos.addView(GameView.newInstance(getContext(), datos.getString(1), "Game Time: " + datos.getString(2), datos.getString(3), datos.getInt(4), datos.getInt(0), datos.getString(5)));
+                    }else {
+                        ll_juegos.addView(GameView.newInstancePop(getContext(), datos.getString(1), "Game Time: " + datos.getString(2), datos.getString(3), datos.getInt(4), datos.getInt(0), datos.getString(5)));
+                    }
                 } while (datos.moveToNext());
+            }else{
+                TextView firstmsg = new TextView(getContext());
+                firstmsg.setText("Bienvenido a Gaming Coach\nAhora puedes empezar a jugar");
+                firstmsg.setLines(2);
+                firstmsg.setHeight(500);
+                firstmsg.setGravity(Gravity.CENTER_VERTICAL);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                    firstmsg.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                }
+                ll_juegos.addView(firstmsg);
             }
 
             db_sesiones.close();
@@ -149,6 +169,9 @@ public class Games extends Fragment {
                 super.onProgressUpdate(values);
                 int caso = (Integer)values[5];
                 if(caso==0){
+                    if(ll_juegos.getChildCount()==1)
+                        if(ll_juegos.getChildAt(0).getClass()==TextView.class)
+                            ll_juegos.removeViewAt(0);
                     sesionAct= GameView.newInstance(getContext(),"Activo: "+values[1],"Game Time: "+values[2],(String)values[4],(Integer)values[0],(Integer)values[6],(String)values[3]);
                     ll_juegos.addView(sesionAct,0);
                 }else if(caso==1){
